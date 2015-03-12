@@ -1,0 +1,18 @@
+<resources>
+  <string name="facebookAppID">548793841817925 </string>
+
+  <string name="app_name">propagate-client</string>
+
+  <string name="hello_world">Hello world!</string>
+  <string name="action_settings">Settings</string>
+
+  <!--Button text-->
+  <string name="btn_login_default">Login Using Propagate Account</string>
+  <string name="btn_login_other">Login Using Other Accounts</string>
+
+  <!--TextView Hint-->
+  <string name="hint_email">Email</string>
+  <string name="hint_password">Password</string>
+
+  <string name="btnLogin">Login</string>
+</resources>
