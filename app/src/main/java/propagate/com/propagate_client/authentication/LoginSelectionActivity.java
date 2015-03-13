@@ -38,6 +38,7 @@ import java.util.Arrays;
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.gcm.GCMUtils;
 import propagate.com.propagate_client.gcm.RegisterDeviceTask;
+import propagate.com.propagate_client.volleyRequest.AppController;
 
 
 public class LoginSelectionActivity extends ActionBarActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks,RegisterDeviceTask.OnTaskExecutionFinished {
@@ -47,7 +48,6 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
   private LoginButton btnFBSignIn;
   private UiLifecycleHelper uiHelper;
   private String loginType = "facebook";
-  private String regId;
 
   /* Track whether the sign-in button has been clicked so that we know to resolve
   all issues preventing sign-in without waiting.
@@ -103,60 +103,7 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
         .addScope(Plus.SCOPE_PLUS_LOGIN)
         .build();
 
-  }
-
-  private void registerDeviceForGCM(){
-    if (GCMUtils.checkPlayServices(this)) {
-      regId = GCMUtils.getRegistrationId(this);
-
-      if (regId.isEmpty()) {
-        new RegisterDeviceTask(this).execute(regId);
-      }
-    } else {
-      Log.i("Registration GCM", "No valid Google Play Services APK found.");
-    }
-  }
-
-  private Session.StatusCallback statusCallback = new Session.StatusCallback() {
-    @Override
-    public void call(Session session, SessionState state,
-                     Exception exception) {
-      if (state.isOpened()) {
-        Log.d("MainActivity", "Facebook session opened.");
-      } else if (state.isClosed()) {
-        Log.d("MainActivity", "Facebook session closed.");
-      }
-    }
-  };
-
-  protected void onStart() {
-    super.onStart();
-    mGoogleApiClient.connect();
-  }
-
-  protected void onStop() {
-    super.onStop();
-    if (mGoogleApiClient.isConnected()) {
-      mGoogleApiClient.disconnect();
-    }
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    uiHelper.onResume();
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
-    uiHelper.onPause();
-  }
-
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    uiHelper.onDestroy();
+    registerDeviceForGCM();
   }
 
   @Override
@@ -174,33 +121,49 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
           resolveSignInError();
         }
         break;
-
-      case R.id.btnFBSignIn:
-
-        break;
     }
   }
 
+  /*
+  * Handles Device Registration for GCM Notification
+  * */
+  private void registerDeviceForGCM(){
+    if (GCMUtils.checkPlayServices(this)) {
+      String regId = GCMUtils.getRegistrationId(this);
+
+      if (regId.isEmpty()) {
+        new RegisterDeviceTask(this).execute();
+      }
+    } else {
+      Log.i("Registration GCM", "No valid Google Play Services APK found.");
+    }
+  }
+
+  /*
+  * Returns registration id from AsyncTask class
+  * */
   @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_login, menu);
-    return true;
+  public void onTaskFinishedEvent(String result){
+    AppController.getInstance().registerDeviceID(result);
+  }
+
+
+  /*
+  * Code for Google+ Login
+  * */
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    mGoogleApiClient.connect();
   }
 
   @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();
-
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-      return true;
+  protected void onStop() {
+    super.onStop();
+    if (mGoogleApiClient.isConnected()) {
+      mGoogleApiClient.disconnect();
     }
-
-    return super.onOptionsItemSelected(item);
   }
 
   /* A helper method to resolve the current ConnectionResult error. */
@@ -215,7 +178,6 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
       }
     }
   }
-
 
   @Override
   public void onConnectionFailed(ConnectionResult result) {
@@ -233,25 +195,11 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
         resolveSignInError();
       }
     }
-
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-
-    if (requestCode == RC_SIGN_IN && loginType == "google") {
-      if (responseCode != RESULT_OK) {
-        mSignInClicked = false;
-      }
-
-      mIntentInProgress = false;
-
-      if (!mGoogleApiClient.isConnecting()) {
-        mGoogleApiClient.connect();
-      }
-    }else if(loginType == "facebook"){
-      uiHelper.onActivityResult(requestCode, responseCode, intent);
-    }
+  public void onConnectionSuspended(int i) {
+    mGoogleApiClient.connect();
   }
 
   @Override
@@ -259,17 +207,6 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
     mSignInClicked = false;
     Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
     getProfileInformation();
-  }
-
-  @Override
-  public void onSaveInstanceState(Bundle savedState) {
-    super.onSaveInstanceState(savedState);
-    uiHelper.onSaveInstanceState(savedState);
-  }
-
-  @Override
-  public void onConnectionSuspended(int i) {
-    mGoogleApiClient.connect();
   }
 
   /**
@@ -298,8 +235,88 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
     }
   }
 
+
+  /*
+  * Code for Facebook Login
+  * */
+  private Session.StatusCallback statusCallback = new Session.StatusCallback() {
+    @Override
+    public void call(Session session, SessionState state,
+                     Exception exception) {
+      if (state.isOpened()) {
+        Log.d("MainActivity", "Facebook session opened.");
+      } else if (state.isClosed()) {
+        Log.d("MainActivity", "Facebook session closed.");
+      }
+    }
+  };
+
   @Override
-  public void onTaskFinishedEvent(String result){
-    regId = result;
+  public void onResume() {
+    super.onResume();
+    uiHelper.onResume();
   }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    uiHelper.onPause();
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    uiHelper.onDestroy();
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle savedState) {
+    super.onSaveInstanceState(savedState);
+    uiHelper.onSaveInstanceState(savedState);
+  }
+
+
+  /*
+  * Handle result return from Google+ and Facebook LoginActivity
+  * */
+  @Override
+  protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+
+    if (requestCode == RC_SIGN_IN && loginType == "google") {
+      if (responseCode != RESULT_OK) {
+        mSignInClicked = false;
+      }
+
+      mIntentInProgress = false;
+
+      if (!mGoogleApiClient.isConnecting()) {
+        mGoogleApiClient.connect();
+      }
+    }else if(loginType == "facebook"){
+      uiHelper.onActivityResult(requestCode, responseCode, intent);
+    }
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.menu_login, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Handle action bar item clicks here. The action bar will
+    // automatically handle clicks on the Home/Up button, so long
+    // as you specify a parent activity in AndroidManifest.xml.
+    int id = item.getItemId();
+
+    //noinspection SimplifiableIfStatement
+    if (id == R.id.action_settings) {
+      return true;
+    }
+
+    return super.onOptionsItemSelected(item);
+  }
+
 }

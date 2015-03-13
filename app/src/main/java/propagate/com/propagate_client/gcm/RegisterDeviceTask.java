@@ -17,13 +17,15 @@ import propagate.com.propagate_client.utils.Constants;
 public class RegisterDeviceTask extends AsyncTask<String,String,String> {
 
   private Context context;
+  private OnTaskExecutionFinished taskExecutionFinished;
   private GoogleCloudMessaging gcm;
 
   public RegisterDeviceTask(Context context){
     this.context = context;
-  }
+    this.taskExecutionFinished = (OnTaskExecutionFinished)context;
 
-  private OnTaskExecutionFinished taskExecutionFinished;
+    gcm = GoogleCloudMessaging.getInstance(context);
+  }
 
   public interface OnTaskExecutionFinished
   {
@@ -31,14 +33,8 @@ public class RegisterDeviceTask extends AsyncTask<String,String,String> {
   }
 
   @Override
-  protected void onPreExecute() {
-    super.onPreExecute();
-    gcm = GoogleCloudMessaging.getInstance(context);
-  }
-
-  @Override
   protected String doInBackground(String... params) {
-    String regId = params[0];
+    String regId="";
     String msg = "";
     try {
       if (gcm == null) {
@@ -51,14 +47,13 @@ public class RegisterDeviceTask extends AsyncTask<String,String,String> {
     } catch (IOException ex) {
       msg = "Error :" + ex.getMessage();
     }
-    return msg;
+    return regId;
   }
 
   @Override
   protected void onPostExecute(String msg) {
     Log.i("PhotoApp Reg_ID", msg);
-    if(taskExecutionFinished != null){
+    if(taskExecutionFinished != null)
       taskExecutionFinished.onTaskFinishedEvent(msg);
-    }
   }
 }
