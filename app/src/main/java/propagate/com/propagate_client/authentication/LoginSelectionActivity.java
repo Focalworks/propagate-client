@@ -78,13 +78,13 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
     uiHelper.onCreate(savedInstanceState);
 
 
-    btnDefaultLogin = (Button) findViewById(R.id.btnDefaultLogin);
+    btnDefaultLogin = (Button) findViewById(R.id.loginSelectionBtnDefaultLogin);
     btnDefaultLogin.setOnClickListener(this);
 
-    btnGPlusLogin = (SignInButton) findViewById(R.id.btnGPlusSignIn);
+    btnGPlusLogin = (SignInButton) findViewById(R.id.loginSelectionBtnGPlusSignIn);
     btnGPlusLogin.setOnClickListener(this);
 
-    btnFBSignIn = (LoginButton) findViewById(R.id.btnFBSignIn);
+    btnFBSignIn = (LoginButton) findViewById(R.id.loginSelectionBtnFBSignIn);
     btnFBSignIn.setOnClickListener(this);
     btnFBSignIn.setReadPermissions(Arrays.asList("email"));
     btnFBSignIn.setUserInfoChangedCallback(new LoginButton.UserInfoChangedCallback() {
@@ -109,12 +109,12 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
   @Override
   public void onClick(View v) {
     switch (v.getId()){
-      case R.id.btnDefaultLogin:
+      case R.id.loginSelectionBtnDefaultLogin:
         Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
         break;
 
-      case R.id.btnGPlusSignIn:
+      case R.id.loginSelectionBtnGPlusSignIn:
         loginType = "google";
         if (!mGoogleApiClient.isConnecting()) {
           mSignInClicked = true;

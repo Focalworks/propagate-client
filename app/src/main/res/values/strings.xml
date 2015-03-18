@@ -14,6 +14,24 @@
   <string name="hint_email">Email</string>
   <string name="hint_password">Password</string>
 
+  <string name="hint_property_title">Title</string>
+  <string name="hint_property_description">Description</string>
+  <string name="hint_property_email">Client Email</string>
+  <string name="hint_property_location">Location</string>
+  <string name="hint_property_address">Address</string>
+  <string name="hint_property_area">Area</string>
+  <string name="hint_property_price">Price</string>
+
+  <string name="hint_requirement_title">Title</string>
+  <string name="hint_requirement_description">Description</string>
+  <string name="hint_requirement_email">Client Email</string>
+  <string name="hint_requirement_location">Location</string>
+  <string name="hint_requirement_area">Area</string>
+  <string name="hint_requirement_range">Range</string>
+  <string name="hint_requirement_price">Price</string>
+  <string name="hint_requirement_price_range">Price Range</string>
+
   <string name="btnLogin">Login</string>
   <string name="btnLogOut">LogOut</string>
+  <string name="btn_submit">Submit</string>
 </resources>

@@ -11,7 +11,7 @@
       android:orientation="vertical">
 
     <EditText
-        android:id="@+id/etEmailId"
+        android:id="@+id/loginScreenEtEmailId"
         android:hint="@string/hint_email"
         android:gravity="center"
         android:layout_width="fill_parent"
@@ -19,7 +19,7 @@
         android:layout_marginBottom="5dp"/>
 
     <EditText
-        android:id="@+id/etPassword"
+        android:id="@+id/loginScreenEtPassword"
         android:hint="@string/hint_password"
         android:gravity="center"
         android:layout_width="fill_parent"
@@ -28,14 +28,14 @@
         android:layout_marginBottom="5dp"/>
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/loginScreenBtnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/btnLogin"/>
 
     <Button
-        android:id="@+id/btnLogOut"
+        android:id="@+id/loginScreenBtnLogOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -11,18 +11,18 @@
       android:layout_centerInParent="true">
 
     <Button
-        android:id="@+id/btnDefaultLogin"
+        android:id="@+id/loginSelectionBtnDefaultLogin"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_login_default"/>
 
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/btnGPlusSignIn"
+        android:id="@+id/loginSelectionBtnGPlusSignIn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
 
     <com.facebook.widget.LoginButton
-        android:id="@+id/btnFBSignIn"
+        android:id="@+id/loginSelectionBtnFBSignIn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"

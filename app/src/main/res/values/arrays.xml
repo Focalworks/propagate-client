@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="array_property_type">
+    <item>Sale</item>
+    <item>Lease</item>
+  </string-array>
+  <string-array name="array_requirement_type">
+    <item>Buy</item>
+    <item>Rent</item>
+  </string-array>
+</resources>

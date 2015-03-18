@@ -44,15 +44,13 @@ public class LoginActivity extends ActionBarActivity{
     super.onCreate(savedInstanceState);
     setContentView(R.layout.login_screen);
 
-    registerDeviceForGCM();
-
     sessionManager = new SessionManager(getApplicationContext());
 
-    etEmail = (EditText) findViewById(R.id.etEmailId);
-    etPassword = (EditText) findViewById(R.id.etPassword);
+    etEmail = (EditText) findViewById(R.id.loginScreenEtEmailId);
+    etPassword = (EditText) findViewById(R.id.loginScreenEtPassword);
 
-    btnLogin = (Button) findViewById(R.id.btnLogin);
-    btnLogOut = (Button) findViewById(R.id.btnLogOut);
+    btnLogin = (Button) findViewById(R.id.loginScreenBtnLogin);
+    btnLogOut = (Button) findViewById(R.id.loginScreenBtnLogOut);
     btnLogin.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -156,16 +154,4 @@ public class LoginActivity extends ActionBarActivity{
       Log.e("Register Error",error.toString());
     }
   };
-
-  private void registerDeviceForGCM(){
-    if (GCMUtils.checkPlayServices(this)) {
-      regId = GCMUtils.getRegistrationId(this);
-
-      if (regId.isEmpty()) {
-        new RegisterDeviceTask(this).execute(regId);
-      }
-    } else {
-      Log.i("Registration GCM", "No valid Google Play Services APK found.");
-    }
-  }
 }

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+      <EditText
+          android:id="@+id/addPropertyEtTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/hint_property_title"/>
+
+      <EditText
+          android:id="@+id/addPropertyEtDescription"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/addPropertyEtTitle"
+          android:hint="@string/hint_property_description"/>
+
+      <EditText
+          android:id="@+id/addPropertyEtEmail"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/addPropertyEtDescription"
+          android:hint="@string/hint_property_email"/>
+
+      <EditText
+          android:id="@+id/addPropertyEtLocation"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/addPropertyEtEmail"
+          android:hint="@string/hint_property_location"/>
+
+      <EditText
+          android:id="@+id/addPropertyEtAddress"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/addPropertyEtLocation"
+          android:hint="@string/hint_property_address"/>
+
+      <EditText
+          android:id="@+id/addPropertyEtArea"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/addPropertyEtAddress"
+          android:hint="@string/hint_property_area"/>
+
+      <EditText
+          android:id="@+id/addPropertyEtPrice"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/addPropertyEtArea"
+          android:hint="@string/hint_property_price"/>
+
+      <Spinner
+          android:id="@+id/addPropertySpType"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/addPropertyEtPrice"
+          android:entries="@array/array_property_type">
+      </Spinner>
+
+      <Button
+          android:id="@+id/addPropertyBtnSubmit"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/addPropertySpType"
+          android:text="@string/btn_submit"
+          android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

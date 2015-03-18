@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:padding="5dp">
+
+  <ImageView
+      android:id="@+id/customContactImgContact"
+      android:layout_width="50dp"
+      android:layout_height="50dp"
+      android:layout_marginBottom="10dp"
+      android:layout_marginTop="10dp"
+      android:src="@drawable/default_contact"
+      android:focusable="false"/>
+
+  <TextView
+      android:id="@+id/customContactTxtMemberName"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Name"
+      android:textSize="20sp"
+      android:layout_toRightOf="@id/customContactImgContact"
+      android:layout_marginLeft="10dp"
+      android:layout_marginTop="10dp"
+      android:focusable="false"/>
+
+  <TextView
+      android:id="@+id/customContactTxtNumber"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Number"
+      android:textSize="15sp"
+      android:layout_toRightOf="@id/customContactImgContact"
+      android:layout_below="@id/customContactTxtMemberName"
+      android:layout_marginBottom="10dp"
+      android:layout_marginLeft="10dp"
+      android:focusable="false"/>
+
+  <CheckBox
+      android:id="@+id/customContactChkSelect"
+      android:layout_width="50dp"
+      android:layout_height="50dp"
+      android:layout_centerVertical="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="10dp"
+      android:clickable="false"/>
+
+  <ImageView
+      android:id="@+id/customContactImgRemove"
+      android:layout_width="38dp"
+      android:layout_height="38dp"
+      android:src="@drawable/ic_action_remove"
+      android:layout_centerVertical="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="10dp"
+      android:visibility="gone"/>
+</RelativeLayout>

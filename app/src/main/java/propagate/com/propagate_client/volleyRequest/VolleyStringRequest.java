@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.SessionManager;
 
 /**
@@ -25,11 +26,13 @@ import propagate.com.propagate_client.utils.SessionManager;
 public class VolleyStringRequest extends StringRequest {
   private SessionManager sessionManager;
   private final Map<String, String> params;
+  private int appVersion;
 
   public VolleyStringRequest(int method, String url, Map<String, String> params, Response.Listener<String> listener, Response.ErrorListener errorListener,Context context) {
     super(method, url, listener, errorListener);
     this.params = params;
     sessionManager = new SessionManager(context);
+    appVersion = CommonFunctions.getVersion(context);
   }
 
   @Override
@@ -45,6 +48,8 @@ public class VolleyStringRequest extends StringRequest {
 
     Map<String,String> headers = new HashMap<String, String>();
     headers.put("Content-Type","application/x-www-form-urlencoded");
+    headers.put("client-type","android");
+    headers.put("client-version", appVersion+"");
     /*if(XCSRFToken != null)
       headers.put("X-CSRF-TOKEN",XCSRFToken);*/
 

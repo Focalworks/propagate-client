@@ -7,10 +7,11 @@
   <uses-permission android:name="android.permission.USE_CREDENTIALS" />
   <uses-permission android:name="android.permission.READ_PHONE_STATE" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.READ_CONTACTS" />
 
   <!-- GCM Permission -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-  <permission android:name="fw.com.photoapp.gcm.permission.C2D_MESSAGE"
+  <permission android:name="propagate.com.propagate_client.gcm.permission.C2D_MESSAGE"
               android:protectionLevel="signature" />
   <uses-permission android:name="propogate.com.propogate_client.gcm.permission.C2D_MESSAGE" />
 
@@ -36,11 +37,6 @@
         android:name=".authentication.LoginSelectionActivity"
         android:label="@string/app_name"
         android:windowSoftInputMode="adjustPan|stateHidden">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
     </activity>
 
     <activity
@@ -49,6 +45,33 @@
         android:windowSoftInputMode="adjustPan|stateHidden">
     </activity>
 
+    <activity
+        android:name=".distributionList.CreateDistListActivity"
+        android:label="@string/app_name"
+        android:windowSoftInputMode="adjustPan|stateHidden">
+    </activity>
+
+    <activity
+        android:name=".contact.AddContactsActivity"
+        android:label="@string/app_name"
+        android:windowSoftInputMode="adjustPan|stateHidden">
+    </activity>
+    <activity
+        android:name=".distributionList.DistListingActivity"
+        android:label="@string/app_name"
+        android:windowSoftInputMode="adjustPan|stateHidden">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+
+    <activity
+        android:name=".property.AddPropertyActivity"
+        android:label="@string/app_name"
+        android:windowSoftInputMode="adjustPan|stateHidden">
+    </activity>
 
     <!-- Facebook Login -->
     <activity
