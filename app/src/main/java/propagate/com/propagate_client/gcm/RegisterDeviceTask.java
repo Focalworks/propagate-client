@@ -1,7 +1,6 @@
 package propagate.com.propagate_client.gcm;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 

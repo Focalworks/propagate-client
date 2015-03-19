@@ -1,31 +1,16 @@
 package propagate.com.propagate_client.property;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.database.PropertyModule;
-import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.volleyRequest.AppController;
-import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
 
 /**
  * Created by kaustubh on 17/3/15.
@@ -60,8 +45,20 @@ public class AddPropertyActivity extends ActionBarActivity {
             etAddress.getText().toString(),etArea.getText().toString(),etPrice.getText().toString(),spType.getSelectedItem().toString()));
 
         AppController.getInstance().postCreateProperty(id);
+        loadPropertyListingActivity();
       }
     });
   }
 
+  private void loadPropertyListingActivity(){
+    Intent intent = new Intent(getApplicationContext(),PropertyListingActivity.class);
+    startActivity(intent);
+    finish();
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    loadPropertyListingActivity();
+  }
 }

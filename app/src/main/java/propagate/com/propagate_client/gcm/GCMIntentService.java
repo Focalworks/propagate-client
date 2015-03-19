@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -13,13 +12,8 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.authentication.LoginSelectionActivity;
-import propagate.com.propagate_client.utils.CommonFunctions;
-import propagate.com.propagate_client.utils.Constants;
 
 /**
  * Created by kaustubh on 12/3/15.

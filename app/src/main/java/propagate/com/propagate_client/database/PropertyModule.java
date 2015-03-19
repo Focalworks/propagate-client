@@ -9,8 +9,6 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import propagate.com.propagate_client.utils.CommonFunctions;
-import propagate.com.propagate_client.utils.Constants;
-import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
 
 /**
  * Created by kaustubh on 17/3/15.

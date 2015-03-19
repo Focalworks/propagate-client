@@ -3,13 +3,10 @@ package propagate.com.propagate_client.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceFragment;
-import android.util.Log;
 
 import java.util.HashMap;
 
 import propagate.com.propagate_client.authentication.LoginSelectionActivity;
-import propagate.com.propagate_client.volleyRequest.AppController;
 
 /**
  * Created by kaustubh on 12/3/15.

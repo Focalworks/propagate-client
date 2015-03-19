@@ -1,6 +1,5 @@
 package propagate.com.propagate_client.distributionList;
 
-import android.widget.ImageView;
 import android.widget.TextView;
 
 /**

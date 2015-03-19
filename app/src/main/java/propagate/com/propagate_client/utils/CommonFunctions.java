@@ -14,11 +14,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.PhoneNumberUtil.*;
-import com.google.i18n.phonenumbers.Phonenumber.*;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -31,8 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import propagate.com.propagate_client.contact.Contact;
 
 /**
  * Created by kaustubh on 12/3/15.

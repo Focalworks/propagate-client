@@ -1,7 +1,6 @@
 package propagate.com.propagate_client.distributionList;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -13,21 +12,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
-
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.contact.AddContactsActivity;
@@ -35,9 +23,7 @@ import propagate.com.propagate_client.contact.Contact;
 import propagate.com.propagate_client.contact.ContactAdapter;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.utils.CommonFunctions;
-import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.volleyRequest.AppController;
-import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
 
 public class CreateDistListActivity extends ActionBarActivity implements ContactAdapter.GroupInterface{
 

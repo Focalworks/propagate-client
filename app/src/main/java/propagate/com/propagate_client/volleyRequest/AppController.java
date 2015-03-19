@@ -1,7 +1,6 @@
 package propagate.com.propagate_client.volleyRequest;
 
 import android.app.Application;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -22,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.database.RequirementModule;
-import propagate.com.propagate_client.distributionList.CreateDistListActivity;
-import propagate.com.propagate_client.gcm.GCMUtils;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.utils.SessionManager;
@@ -272,7 +269,7 @@ public class AppController extends Application {
 
   public void postCreateRequirement(long id){
     ArrayList<RequirementModule> requirementList = new ArrayList<RequirementModule>();
-    requirementList = RequirementModule.getInstance().getRequirementInfo(getApplicationContext(),id);
+    requirementList = RequirementModule.getInstance().getRequirementInfo(getApplicationContext(), id);
     RequirementModule requirementInfo = null;
     if(requirementList.size() != 0)
       requirementInfo = requirementList.get(0);

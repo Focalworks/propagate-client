@@ -1,6 +1,5 @@
 package propagate.com.propagate_client.database;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

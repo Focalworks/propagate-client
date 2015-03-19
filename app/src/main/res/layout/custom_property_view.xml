@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+  <TextView
+      android:id="@+id/property_listing_title"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="Title"
+      android:textSize="20sp"/>
+
+  <TextView
+      android:id="@+id/property_listing_location"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Location"
+      android:layout_below="@+id/property_listing_title"
+      android:textSize="15sp"/>
+
+  <TextView
+      android:id="@+id/property_listing_area"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Area"
+      android:layout_below="@+id/property_listing_location"
+      android:textSize="15sp"/>
+
+  <TextView
+      android:id="@+id/property_listing_type"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Type"
+      android:layout_below="@+id/property_listing_location"
+      android:layout_alignParentRight="true"
+      android:textSize="15sp"/>
+
+  <TextView
+      android:id="@+id/property_listing_unit"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/Rs"
+      android:layout_below="@+id/property_listing_area"
+      android:textSize="18sp"
+      android:layout_marginRight="5dp"/>
+
+  <TextView
+      android:id="@+id/property_listing_price"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="price"
+      android:layout_toRightOf="@+id/property_listing_unit"
+      android:layout_below="@+id/property_listing_area"
+      android:textSize="15sp"/>
+
+</RelativeLayout>

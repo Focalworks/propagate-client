@@ -1,4 +1,7 @@
 <resources>
+
+  <string name="Rs">\u20B9</string>
+
   <string name="facebookAppID">548793841817925 </string>
 
   <string name="app_name">propagate-client</string>
