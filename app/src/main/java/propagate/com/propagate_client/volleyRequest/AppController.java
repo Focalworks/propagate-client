@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.database.PropertyModule;
+import propagate.com.propagate_client.database.RequirementModule;
 import propagate.com.propagate_client.distributionList.CreateDistListActivity;
 import propagate.com.propagate_client.gcm.GCMUtils;
 import propagate.com.propagate_client.utils.CommonFunctions;
@@ -225,7 +226,7 @@ public class AppController extends Application {
     VolleyStringRequest postRequest = new VolleyStringRequest(
         Request.Method.POST,
         Constants.createPropertyUrl,
-        getGroupParams(propertyInfo),
+        getPropertyParams(propertyInfo),
         createPropertyRequestListener,
         createPropertyRequestErrorListener,
         getApplicationContext()
@@ -233,7 +234,7 @@ public class AppController extends Application {
     AppController.getInstance().addToRequestQueue(postRequest);
   }
 
-  public Map<String,String> getGroupParams(PropertyModule propertyInfo){
+  public Map<String,String> getPropertyParams(PropertyModule propertyInfo){
 
     Map<String, String> jsonParams = new HashMap<String, String>();
     jsonParams.put("agentId", Long.toString(propertyInfo.getAgent_id()));
@@ -259,6 +260,60 @@ public class AppController extends Application {
   };
 
   Response.ErrorListener createPropertyRequestErrorListener = new Response.ErrorListener() {
+    @Override
+    public void onErrorResponse(VolleyError error) {
+      Log.e("Error Response",error.toString());
+    }
+  };
+
+  /*
+  * Post Created Requirement
+  * */
+
+  public void postCreateRequirement(long id){
+    ArrayList<RequirementModule> requirementList = new ArrayList<RequirementModule>();
+    requirementList = RequirementModule.getInstance().getRequirementInfo(getApplicationContext(),id);
+    RequirementModule requirementInfo = null;
+    if(requirementList.size() != 0)
+      requirementInfo = requirementList.get(0);
+
+    VolleyStringRequest postRequest = new VolleyStringRequest(
+        Request.Method.POST,
+        Constants.createRequirementUrl,
+        getRequirementParams(requirementInfo),
+        createRequirementRequestListener,
+        createRequirementRequestErrorListener,
+        getApplicationContext()
+    );
+    AppController.getInstance().addToRequestQueue(postRequest);
+  }
+
+  public Map<String,String> getRequirementParams(RequirementModule requirementInfo){
+
+    Map<String, String> jsonParams = new HashMap<String, String>();
+    jsonParams.put("title", requirementInfo.getTitle());
+    jsonParams.put("description", requirementInfo.getDescription());
+    jsonParams.put("clientEmail", requirementInfo.getClient_email());
+    jsonParams.put("location", requirementInfo.getLocation());
+    jsonParams.put("area", requirementInfo.getArea());
+    jsonParams.put("range", requirementInfo.getRange());
+    jsonParams.put("price", requirementInfo.getPrice());
+    jsonParams.put("priceRange", requirementInfo.getPrice_range());
+    jsonParams.put("type", requirementInfo.getType());
+
+    return jsonParams;
+  }
+
+
+
+  Response.Listener<String> createRequirementRequestListener = new Response.Listener<String>() {
+    @Override
+    public void onResponse(String property_id) {
+      Log.i("add requirement res",property_id);
+    }
+  };
+
+  Response.ErrorListener createRequirementRequestErrorListener = new Response.ErrorListener() {
     @Override
     public void onErrorResponse(VolleyError error) {
       Log.e("Error Response",error.toString());

@@ -174,15 +174,15 @@ public class PropertyModule {
     db = databaseHelper.open();
 
     contentValues = new ContentValues();
-    contentValues.put(databaseHelper.KEY_property_title, propertyModule.getTitle());
-    contentValues.put(databaseHelper.KEY_property_description, propertyModule.getDesc());
-    contentValues.put(databaseHelper.KEY_property_agent_id, propertyModule.getAgent_id());
-    contentValues.put(databaseHelper.KEY_property_client_email, propertyModule.getClient_email());
-    contentValues.put(databaseHelper.KEY_property_location, propertyModule.getLocation());
-    contentValues.put(databaseHelper.KEY_property_address, propertyModule.getAddress());
-    contentValues.put(databaseHelper.KEY_property_area, propertyModule.getArea());
-    contentValues.put(databaseHelper.KEY_property_price, propertyModule.getPrice());
-    contentValues.put(databaseHelper.KEY_property_type, propertyModule.getType());
+    contentValues.put(databaseHelper.KEY_title, propertyModule.getTitle());
+    contentValues.put(databaseHelper.KEY_description, propertyModule.getDesc());
+    contentValues.put(databaseHelper.KEY_agent_id, propertyModule.getAgent_id());
+    contentValues.put(databaseHelper.KEY_client_email, propertyModule.getClient_email());
+    contentValues.put(databaseHelper.KEY_location, propertyModule.getLocation());
+    contentValues.put(databaseHelper.KEY_address, propertyModule.getAddress());
+    contentValues.put(databaseHelper.KEY_area, propertyModule.getArea());
+    contentValues.put(databaseHelper.KEY_price, propertyModule.getPrice());
+    contentValues.put(databaseHelper.KEY_type, propertyModule.getType());
     contentValues.put(databaseHelper.KEY_created, CommonFunctions.getCreatedDate());
     contentValues.put(databaseHelper.KEY_status, 0);
 
@@ -201,10 +201,10 @@ public class PropertyModule {
     if(propertyId == 0) {
       cursor = db.rawQuery("select * from " + databaseHelper.TABLE_PROPERTY + " ORDER BY " + databaseHelper.KEY_created + " DESC", null);
     }else {
-      cursor = db.query(databaseHelper.TABLE_PROPERTY, new String[]{databaseHelper.KEY_id,databaseHelper.KEY_property_title,
-              databaseHelper.KEY_property_description, databaseHelper.KEY_property_agent_id, databaseHelper.KEY_property_client_email,
-              databaseHelper.KEY_property_location, databaseHelper.KEY_property_address, databaseHelper.KEY_property_area,
-              databaseHelper.KEY_property_price,databaseHelper.KEY_property_type,databaseHelper.KEY_created,databaseHelper.KEY_status}, databaseHelper.KEY_id + "=?",
+      cursor = db.query(databaseHelper.TABLE_PROPERTY, new String[]{databaseHelper.KEY_id,databaseHelper.KEY_title,
+              databaseHelper.KEY_description, databaseHelper.KEY_agent_id, databaseHelper.KEY_client_email,
+              databaseHelper.KEY_location, databaseHelper.KEY_address, databaseHelper.KEY_area,
+              databaseHelper.KEY_price,databaseHelper.KEY_type,databaseHelper.KEY_created,databaseHelper.KEY_status}, databaseHelper.KEY_id + "=?",
           new String[]{String.valueOf(propertyId)}, null, null, null, null);
     }
 
@@ -212,15 +212,15 @@ public class PropertyModule {
       while (cursor.isAfterLast() == false) {
 
         long id = cursor.getLong(cursor.getColumnIndex(databaseHelper.KEY_id));
-        String title = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_property_title));
-        String description = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_property_description));
-        int agent_id = cursor.getInt(cursor.getColumnIndex(databaseHelper.KEY_property_agent_id));
-        String client_email = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_property_client_email));
-        String location = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_property_location));
-        String address = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_property_address));
-        String area = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_property_area));
-        String price = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_property_price));
-        String type = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_property_type));
+        String title = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_title));
+        String description = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_description));
+        int agent_id = cursor.getInt(cursor.getColumnIndex(databaseHelper.KEY_agent_id));
+        String client_email = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_client_email));
+        String location = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_location));
+        String address = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_address));
+        String area = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_area));
+        String price = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_price));
+        String type = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_type));
         String created = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_created));
         int status = cursor.getInt(cursor.getColumnIndex(databaseHelper.KEY_status));
 
@@ -243,7 +243,7 @@ public class PropertyModule {
     ContentValues values = new ContentValues();
     values.put(databaseHelper.KEY_status, 1);
     db.update(databaseHelper.TABLE_PROPERTY, values, databaseHelper.KEY_id+"="+pid, null);
-    Log.i("Database", "Updated P Status");
+    Log.i("Database", "Updated Property Status");
   }
 
 }

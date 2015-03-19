@@ -20,34 +20,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   public static final String TABLE_DIST_DETAIL = "dist_lists";
   public static final String TABLE_DIST_MEMBERS = "dist_list_members";
   public static final String TABLE_PROPERTY = "property";
+  public static final String TABLE_REQUIREMENT = "requirement";
 
   //Common Columns
   public static final String KEY_id = "id";
   public static final String KEY_created = "created_time";
-
+  public static final String KEY_status = "status";
 
   // Distribution List Details Table Column names
   public static final String KEY_dist_ID = "dist_id";
   public static final String KEY_dist_name = "name";
   public static final String KEY_created_by = "created_by";
   public static final String KEY_count = "count";
-  public static final String KEY_status = "status";
 
   //Distribution Members Table Column names
   public static final String KEY_contact_id = "contact_id";
   public static final String KEY_member_name = "name";
   public static final String KEY_photo_uri = "photo_uri";
 
-  //Property Table Column Names
-  public static final String KEY_property_title = "title";
-  public static final String KEY_property_description = "description";
-  public static final String KEY_property_agent_id = "agent_id";
-  public static final String KEY_property_client_email = "client_email";
-  public static final String KEY_property_location = "location";
-  public static final String KEY_property_address = "address";
-  public static final String KEY_property_area = "area";
-  public static final String KEY_property_price = "price";
-  public static final String KEY_property_type = "type";
+  //Property and Requirement Table Column Names
+  public static final String KEY_title = "title";
+  public static final String KEY_description = "description";
+  public static final String KEY_agent_id = "agent_id";
+  public static final String KEY_client_email = "client_email";
+  public static final String KEY_location = "location";
+  public static final String KEY_address = "address";
+  public static final String KEY_area = "area";
+  public static final String KEY_range = "range";
+  public static final String KEY_price = "price";
+  public static final String KEY_price_range = "price_range";
+  public static final String KEY_type = "type";
 
   public DatabaseHelper(Context context){
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -66,9 +68,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     db.execSQL(CREATE_DIST_MEMBERS);
 
     String CREATE_PROPERTY = "CREATE TABLE " + TABLE_PROPERTY + "("
-        + KEY_id + " INTEGER PRIMARY KEY,"+ KEY_property_title + " TEXT,"+KEY_property_description+ " TEXT,"+KEY_property_agent_id+ " INTEGER,"+KEY_property_client_email+ " TEXT,"
-        +KEY_property_location+" TEXT,"+KEY_property_address+" TEXT,"+KEY_property_area+" TEXT,"+KEY_property_price+" TEXT,"+KEY_property_type+" TEXT,"+KEY_created+ " TEXT,"+KEY_status+" INTEGER)";
+        + KEY_id + " INTEGER PRIMARY KEY,"+ KEY_title + " TEXT,"+KEY_description+ " TEXT,"+KEY_agent_id+ " INTEGER,"+KEY_client_email+ " TEXT,"
+        +KEY_location+" TEXT,"+KEY_address+" TEXT,"+KEY_area+" TEXT,"+KEY_price+" TEXT,"+KEY_type+" TEXT,"+KEY_created+ " TEXT,"+KEY_status+" INTEGER)";
     db.execSQL(CREATE_PROPERTY);
+
+    String CREATE_REQUIREMENT = "CREATE TABLE " + TABLE_REQUIREMENT + "("
+        + KEY_id + " INTEGER PRIMARY KEY,"+ KEY_title + " TEXT,"+KEY_description+ " TEXT,"+KEY_client_email+ " TEXT,"
+        +KEY_location+" TEXT,"+KEY_area+" TEXT,"+KEY_range+" TEXT,"+KEY_price+" TEXT,"+KEY_price_range+" TEXT,"+KEY_type+" TEXT,"+KEY_created+ " TEXT,"+KEY_status+" INTEGER)";
+    db.execSQL(CREATE_REQUIREMENT);
   }
 
   @Override
@@ -76,6 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_DIST_DETAIL);
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_DIST_MEMBERS);
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROPERTY);
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_REQUIREMENT);
   }
 
   public SQLiteDatabase open(){
