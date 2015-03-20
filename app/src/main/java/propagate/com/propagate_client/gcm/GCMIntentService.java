@@ -90,7 +90,7 @@ public class GCMIntentService extends IntentService {
             .setTicker("Propagate Notification")
             .setContentTitle(title)
             .setContentText(message);
-
+    
     PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, myIntent, Intent.FILL_IN_ACTION);
     mBuilder.setContentIntent(pendingIntent);
 

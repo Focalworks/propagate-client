@@ -13,6 +13,11 @@
   <string name="btn_login_default">Login Using Propagate Account</string>
   <string name="btn_login_other">Login Using Other Accounts</string>
 
+  <string name="btnLogin">Login</string>
+  <string name="btnLogOut">LogOut</string>
+  <string name="btn_submit">Submit</string>
+  <string name="btn_delete_dist_list">Delete Distribution List</string>
+
   <!--TextView Hint-->
   <string name="hint_email">Email</string>
   <string name="hint_password">Password</string>
@@ -34,7 +39,4 @@
   <string name="hint_requirement_price">Price</string>
   <string name="hint_requirement_price_range">Price Range</string>
 
-  <string name="btnLogin">Login</string>
-  <string name="btnLogOut">LogOut</string>
-  <string name="btn_submit">Submit</string>
 </resources>

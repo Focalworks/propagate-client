@@ -187,7 +187,6 @@ public class CommonFunctions {
             map.put("contact_id", contactId);
             map.put("display_name", displayName);
             map.put("profile_pic", profile_Img);
-            map.put("phone_number", "");
             map.put("isSelected", "false");
             contactList.add(map);
           }
@@ -231,7 +230,6 @@ public class CommonFunctions {
         map.put("contact_id", contact_id);
         map.put("display_name", name);
         map.put("profile_pic", photo);
-        map.put("phone_number", phoneNumber);
         map.put("isSelected", "false");
         list.add(map);
       }

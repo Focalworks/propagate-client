@@ -20,6 +20,7 @@ public class DistListModule implements Serializable {
   private SQLiteDatabase db;
   private static DistListModule mInstance;
 
+  private long id;
   private long dist_id;
   private String dist_name;
   private String created_by;
@@ -61,6 +62,14 @@ public class DistListModule implements Serializable {
     this.count = count;
     this.created = created_timestamp;
     this.status = status;
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public void setId(long id) {
+    this.id = id;
   }
 
   public long getDist_id() {
@@ -166,7 +175,7 @@ public class DistListModule implements Serializable {
     long lastId = db.insert(databaseHelper.TABLE_DIST_MEMBERS,null,contentValues);
     databaseHelper.close();
 
-    Log.i("Database", "Inserted List Members "+getMember_name());
+    Log.i("Database", "Inserted List Members "+distListModule.getDist_id());
     return lastId;
   }
 
@@ -214,23 +223,19 @@ public class DistListModule implements Serializable {
     DatabaseHelper databaseHelper = new DatabaseHelper(context);
     db = databaseHelper.open();
     Cursor cursor;
-    cursor = db.query(databaseHelper.TABLE_DIST_MEMBERS, new String[]{databaseHelper.KEY_id,
+    cursor = db.query(databaseHelper.TABLE_DIST_MEMBERS, new String[]{
             databaseHelper.KEY_member_name, databaseHelper.KEY_contact_id, databaseHelper.KEY_photo_uri}, databaseHelper.KEY_dist_ID + "=?",
         new String[]{String.valueOf(distListId)}, null, null, null, null);
 
-    int idIndex = cursor.getColumnIndex(databaseHelper.KEY_id);
     int nameIndex = cursor.getColumnIndex(databaseHelper.KEY_member_name);
     int contact_idIndex = cursor.getColumnIndex(databaseHelper.KEY_contact_id);
     int photoIndex = cursor.getColumnIndex(databaseHelper.KEY_photo_uri);
     if (cursor .moveToFirst()) {
       while (cursor.isAfterLast() == false) {
-
-        long id = cursor.getLong(idIndex);
         String name = cursor.getString(nameIndex);
         String contact_id = cursor.getString(contact_idIndex);
         String photoUri = cursor.getString(photoIndex);
-
-        distList.add(new DistListModule(id,name,contact_id,photoUri));
+        distList.add(new DistListModule(distListId,name,contact_id,photoUri));
         cursor.moveToNext();
       }
     }
@@ -242,14 +247,23 @@ public class DistListModule implements Serializable {
   }
 
   /*Update distribution list status*/
-  public void updateGroupStatus(Context context,long gid){
+  public void updateDistListStatus(Context context,long dist_id){
     DatabaseHelper databaseHelper = new DatabaseHelper(context);
     db = databaseHelper.open();
 
     ContentValues values = new ContentValues();
     values.put(databaseHelper.KEY_status, 1);
-    db.update(databaseHelper.TABLE_DIST_DETAIL, values, databaseHelper.KEY_id+"="+gid, null);
+    db.update(databaseHelper.TABLE_DIST_DETAIL, values, databaseHelper.KEY_id+"="+dist_id, null);
     Log.i("Database", "Updated Dist List Status");
+  }
+
+  public void deleteDistList(Context context,long dist_id){
+    DatabaseHelper databaseHelper = new DatabaseHelper(context);
+    db = databaseHelper.open();
+
+    db.delete(databaseHelper.TABLE_DIST_DETAIL, databaseHelper.KEY_id + "=" + dist_id, null);
+    db.delete(databaseHelper.TABLE_DIST_MEMBERS, databaseHelper.KEY_dist_ID + "=" + dist_id, null);
+    Log.i("Database", "Deleted "+dist_id);
   }
 
 }

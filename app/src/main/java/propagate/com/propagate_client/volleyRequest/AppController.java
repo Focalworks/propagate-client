@@ -198,7 +198,7 @@ public class AppController extends Application {
     @Override
     public void onResponse(String g_id) {
       Log.i("dist list response",g_id);
-      DistListModule.getInstance().updateGroupStatus(getApplicationContext(), group_id);
+      DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id);
     }
   };
 
@@ -259,7 +259,7 @@ public class AppController extends Application {
   Response.ErrorListener createPropertyRequestErrorListener = new Response.ErrorListener() {
     @Override
     public void onErrorResponse(VolleyError error) {
-      Log.e("Error Response",error.toString());
+      Log.e("Error Response",error.networkResponse.statusCode+"");
     }
   };
 

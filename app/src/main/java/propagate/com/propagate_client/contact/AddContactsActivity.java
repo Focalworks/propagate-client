@@ -56,7 +56,7 @@ public class AddContactsActivity extends ActionBarActivity implements ContactAda
         checkAll.setChecked(bundle.getBoolean("allSelected"));
       }
       for (HashMap<String, String> list : contactList) {
-        contactArrayList.add(new Contact(Long.parseLong(list.get("contact_id")), list.get("display_name"), list.get("phone_number"), list.get("profile_pic"), Boolean.parseBoolean(list.get("isSelected"))));
+        contactArrayList.add(new Contact(Long.parseLong(list.get("contact_id")), list.get("display_name"), list.get("profile_pic"), Boolean.parseBoolean(list.get("isSelected"))));
       }
 
     /*Collections.sort(contactArrayList, new Comparator<Contact>(){

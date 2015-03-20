@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -43,12 +45,22 @@ public class DistListingActivity extends ActionBarActivity {
     /*
     * pass id:0 to get all records and pass individual id to get individual record
     * */
-    ArrayList<DistListModule> groupList = DistListModule.getInstance().getDistLists(this, 0);
+    ArrayList<DistListModule> distArrayList = DistListModule.getInstance().getDistLists(this, 0);
 
-    distListAdapter = new DistListAdapter(this, R.layout.custom_dist_view,groupList);
+    distListAdapter = new DistListAdapter(this, R.layout.custom_dist_view,distArrayList);
 
     groupListView = (ListView) findViewById(R.id.listingListView);
     groupListView.setAdapter(distListAdapter);
+
+    groupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        DistListModule distList = distListAdapter.getItem(position);
+        Intent intent = new Intent(getApplicationContext(),DistributionListDetailActivity.class);
+        intent.putExtra("distListId",distList.getDist_id());
+        startActivity(intent);
+      }
+    });
 
   }
 

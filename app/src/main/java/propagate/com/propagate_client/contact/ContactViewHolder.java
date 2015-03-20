@@ -9,14 +9,12 @@ import android.widget.TextView;
  */
 public class ContactViewHolder {
   TextView txtName;
-  TextView txtNumber;
   CheckBox chkSelect;
   ImageView profileImg;
   ImageView imgRemove;
 
-  public ContactViewHolder(TextView txtName, TextView txtNumber, CheckBox chkSelect, ImageView profileImg,ImageView imgRemove) {
+  public ContactViewHolder(TextView txtName, CheckBox chkSelect, ImageView profileImg,ImageView imgRemove) {
     this.txtName = txtName;
-    this.txtNumber = txtNumber;
     this.chkSelect = chkSelect;
     this.profileImg = profileImg;
     this.imgRemove = imgRemove;
@@ -28,14 +26,6 @@ public class ContactViewHolder {
 
   public void setTxtName(TextView txtName) {
     this.txtName = txtName;
-  }
-
-  public TextView getTxtNumber() {
-    return txtNumber;
-  }
-
-  public void setTxtNumber(TextView txtNumber) {
-    this.txtNumber = txtNumber;
   }
 
   public CheckBox getChkSelect() {

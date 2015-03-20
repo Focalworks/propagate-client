@@ -57,7 +57,6 @@ public class ContactAdapter extends ArrayAdapter<Contact> implements Filterable{
 
     RoundImage roundedImage;
     TextView txtName;
-    TextView txtNumber;
     CheckBox chkSelect;
     ImageView profileImg;
     ImageView imgRemove;
@@ -67,35 +66,29 @@ public class ContactAdapter extends ArrayAdapter<Contact> implements Filterable{
       convertView = inflater.inflate(row_contactID, parent, false);
 
       txtName = (TextView) convertView.findViewById(R.id.customContactTxtMemberName);
-      txtNumber = (TextView) convertView.findViewById(R.id.customContactTxtNumber);
       profileImg = (ImageView) convertView.findViewById(R.id.customContactImgContact);
       chkSelect = (CheckBox) convertView.findViewById(R.id.customContactChkSelect);
       imgRemove = (ImageView) convertView.findViewById(R.id.customContactImgRemove);
 
-      if(action.equals("autoCompleteContactList")) {
-        chkSelect.setVisibility(View.GONE);
-      }else if(action.equals("groupContactList")){
-        chkSelect.setVisibility(View.GONE);
+      if(action.equals("addContactList")) {
+        chkSelect.setVisibility(View.VISIBLE);
+      }else if(action.equals("distMembersList")){
         imgRemove.setVisibility(View.VISIBLE);
       }
 
       // store the holder with the view.
-      convertView.setTag(new ContactViewHolder(txtName,txtNumber,chkSelect,profileImg,imgRemove));
+      convertView.setTag(new ContactViewHolder(txtName,chkSelect,profileImg,imgRemove));
 
     }else{
       ContactViewHolder contactViewHolder = (ContactViewHolder) convertView.getTag();
       txtName = contactViewHolder.getTxtName();
-      txtNumber = contactViewHolder.getTxtNumber();
       chkSelect = contactViewHolder.getChkSelect();
       profileImg = contactViewHolder.getProfileImg();
       imgRemove = contactViewHolder.getImgRemove();
     }
-
     try {
       if( contactArrayList.get(position) != null){
-
         txtName.setText(contact.getName());
-        txtNumber.setText(contact.getPhone_number());
 
         if(contactArrayList.get(position).getProfile_pic() != null){
           try {

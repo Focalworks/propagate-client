@@ -3,7 +3,6 @@ package propagate.com.propagate_client.distributionList;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,14 +60,14 @@ public class CreateDistListActivity extends ActionBarActivity implements Contact
     if (contactList.isEmpty()) {
       contactList = CommonFunctions.getContactList(CreateDistListActivity.this);
       for (HashMap<String,String> contact : contactList){
-        contactArrayList.add(new Contact(Long.parseLong(contact.get("contact_id")), contact.get("display_name"), contact.get("phone_number"), contact.get("profile_pic"), Boolean.parseBoolean(contact.get("isSelected"))));
+        contactArrayList.add(new Contact(Long.parseLong(contact.get("contact_id")), contact.get("display_name"), contact.get("profile_pic"), Boolean.parseBoolean(contact.get("isSelected"))));
       }
     }else{
       for (HashMap<String, String> list : contactList) {
         if(Boolean.parseBoolean(list.get("isSelected")))
-          selectedContactArrayList.add(new Contact(Long.parseLong(list.get("contact_id")), list.get("display_name"), list.get("phone_number"), list.get("profile_pic"), Boolean.parseBoolean(list.get("isSelected"))));
+          selectedContactArrayList.add(new Contact(Long.parseLong(list.get("contact_id")), list.get("display_name"), list.get("profile_pic"), Boolean.parseBoolean(list.get("isSelected"))));
 
-        contactArrayList.add(new Contact(Long.parseLong(list.get("contact_id")), list.get("display_name"), list.get("phone_number"), list.get("profile_pic"), Boolean.parseBoolean(list.get("isSelected"))));
+        contactArrayList.add(new Contact(Long.parseLong(list.get("contact_id")), list.get("display_name"), list.get("profile_pic"), Boolean.parseBoolean(list.get("isSelected"))));
       }
     }
     Collections.sort(contactArrayList);
@@ -101,7 +100,7 @@ public class CreateDistListActivity extends ActionBarActivity implements Contact
           if (Long.parseLong(c.get("contact_id")) == contact.getContact_id()) {
             c.put("isSelected", "" + contact.isChecked());
 
-            selectedContactArrayList.add(new Contact(contact.getContact_id(), contact.getName(), contact.getPhone_number(), contact.getProfile_pic(), contact.isChecked()));
+            selectedContactArrayList.add(new Contact(contact.getContact_id(), contact.getName(), contact.getProfile_pic(), contact.isChecked()));
             Collections.sort(selectedContactArrayList);
             selectedContactAdapter.notifyDataSetChanged();
           }
@@ -111,7 +110,7 @@ public class CreateDistListActivity extends ActionBarActivity implements Contact
       }
     });
 
-    selectedContactAdapter = new ContactAdapter(this, R.layout.custom_contact_view, selectedContactArrayList, "groupContactList");
+    selectedContactAdapter = new ContactAdapter(this, R.layout.custom_contact_view, selectedContactArrayList, "distMembersList");
     groupContactListView = (ListView) findViewById(R.id.createDistListGroupContactList);
     groupContactListView.setAdapter(selectedContactAdapter);
 
@@ -135,7 +134,6 @@ public class CreateDistListActivity extends ActionBarActivity implements Contact
       case R.id.menu_done:
         long group_id = DistListModule.getInstance().addDistList(getApplicationContext(),new DistListModule(etGroupName.getText().toString(),"1",selectedContactArrayList.size()));
         for(Contact contact : selectedContactArrayList) {
-          Log.i("size",contact.getContact_id()+" "+contact.getName()+" "+selectedContactArrayList.size());
           DistListModule.getInstance().addDistListMembers(getApplicationContext(), new DistListModule(group_id,contact.getName(),Long.toString(contact.getContact_id()),contact.getProfile_pic()));
         }
         AppController.getInstance().postCreateDistList(group_id);
@@ -166,9 +164,9 @@ public class CreateDistListActivity extends ActionBarActivity implements Contact
     for(HashMap<String,String> c : contactList) {
       if(Long.parseLong(c.get("contact_id")) == contact.getContact_id()) {
         c.put("isSelected", ""+contact.isChecked());
-        contactArrayList.add(new Contact(contact.getContact_id(), contact.getName(), contact.getPhone_number(), contact.getProfile_pic(), contact.isChecked()));
+        contactArrayList.add(new Contact(contact.getContact_id(), contact.getName(), contact.getProfile_pic(), contact.isChecked()));
       }else{
-        contactArrayList.add(new Contact(Long.parseLong(c.get("contact_id")), c.get("display_name"), c.get("phone_number"), c.get("profile_pic"), Boolean.parseBoolean(c.get("isSelected"))));
+        contactArrayList.add(new Contact(Long.parseLong(c.get("contact_id")), c.get("display_name"), c.get("profile_pic"), Boolean.parseBoolean(c.get("isSelected"))));
       }
     }
     Collections.sort(contactArrayList);
