@@ -98,7 +98,7 @@ public class DistListDetailActivity extends Activity implements ContactAdapter.G
             DistListModule.getInstance().updateDistListCount(getApplicationContext(),distListId,"remove");
             contactAdapter.remove(contact);
             contactAdapter.notifyDataSetChanged();
-
+            membersArrayList.remove(position);
             dialog.dismiss();
           }
         })

@@ -1,68 +1,68 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:background="#ffffff">
+  android:layout_width="match_parent"
+  android:layout_height="fill_parent"
+  android:background="#ffffff">
   <ScrollView
-      android:id="@+id/createDistListScrollView"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+    android:id="@+id/createDistListScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="5dp">
 
       <EditText
-          android:id="@+id/createDistListEtGroupName"
-          android:layout_width="match_parent"
-          android:layout_height="50dp"
-          android:layout_margin="5dp"
-          android:inputType="textCapSentences|textAutoComplete"
-          android:imeOptions="flagNoExtractUi"
-          android:hint="Type Group Subject..."
-          android:padding="10dp"
-          android:background="@drawable/input_grey"/>
+        android:id="@+id/createDistListEtGroupName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="5dp"
+        android:inputType="textCapSentences|textAutoComplete"
+        android:imeOptions="flagNoExtractUi"
+        android:hint="Type Group Subject..."
+        android:padding="10dp"
+        android:background="@drawable/input_grey"/>
 
       <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createDistListEtGroupName">
+        <AutoCompleteTextView
+          android:id="@+id/createDistListEtAddMember"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="5dp"
+          android:completionThreshold="1"
+          android:imeOptions="flagNoExtractUi"
+          android:hint="Type Contact Name..."
+          android:padding="10dp"
+          android:background="@drawable/input_grey"
+          android:height="50dp"/>
+        <ImageView
+          android:id="@+id/createDistListBtnAddMembers"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_below="@+id/createDistListEtGroupName">
-        <AutoCompleteTextView
-            android:id="@+id/createDistListEtAddMember"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:completionThreshold="1"
-            android:imeOptions="flagNoExtractUi"
-            android:hint="Type Contact Name..."
-            android:padding="10dp"
-            android:background="@drawable/input_grey"
-            android:height="50dp"/>
-        <ImageView
-            android:id="@+id/createDistListBtnAddMembers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_add"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"/>
+          android:src="@mipmap/ic_add"
+          android:layout_centerVertical="true"
+          android:layout_alignParentEnd="true"
+          android:layout_alignParentRight="true"
+          android:layout_marginRight="15dp"/>
       </RelativeLayout>
     </RelativeLayout>
   </ScrollView>
   <ListView
-      android:id="@+id/createDistListGroupContactList"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:listSelector="@android:color/transparent"
-      android:cacheColorHint="@android:color/transparent"
-      android:layout_below="@+id/createDistListScrollView"
-      android:layout_margin="5dp">
+    android:id="@+id/createDistListGroupContactList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:listSelector="@android:color/transparent"
+    android:cacheColorHint="@android:color/transparent"
+    android:layout_below="@+id/createDistListScrollView"
+    android:layout_margin="5dp">
   </ListView>
   <ProgressBar
-      android:id="@+id/createDistListProgressBar"
-      style="?android:attr/progressBarStyleLarge"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:visibility="gone"/>
+    android:id="@+id/createDistListProgressBar"
+    style="?android:attr/progressBarStyleLarge"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:visibility="gone"/>
 </RelativeLayout>

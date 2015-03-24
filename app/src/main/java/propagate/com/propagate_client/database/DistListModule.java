@@ -261,11 +261,12 @@ public class DistListModule implements Serializable {
   }
 
   /*Update distribution list status*/
-  public void updateDistListStatus(Context context,long dist_id){
+  public void updateDistListStatus(Context context,long dist_id,long server_dist_id){
     DatabaseHelper databaseHelper = new DatabaseHelper(context);
     db = databaseHelper.open();
 
     ContentValues values = new ContentValues();
+    values.put(databaseHelper.KEY_server_dist_id, server_dist_id);
     values.put(databaseHelper.KEY_status, 1);
     db.update(databaseHelper.TABLE_DIST_DETAIL, values, databaseHelper.KEY_id+"="+dist_id, null);
     databaseHelper.close();

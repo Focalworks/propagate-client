@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:padding="10dp">
   <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/scrollView"
-      android:isScrollContainer="true">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/scrollView"
+    android:isScrollContainer="true">
 
     <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+      <EditText
+        android:id="@+id/addRequirementEtTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-      <EditText
-          android:id="@+id/addRequirementEtTitle"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:hint="@string/hint_requirement_title"
-          android:imeOptions="flagNavigateNext"/>
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_requirement_title"
+        android:imeOptions="flagNavigateNext"/>
 
       <EditText
-          android:id="@+id/addRequirementEtDescription"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/addRequirementEtTitle"
-          android:hint="@string/hint_requirement_description"
-          android:imeOptions="flagNavigateNext"/>
+        android:id="@+id/addRequirementEtDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addRequirementEtTitle"
+        android:hint="@string/hint_requirement_description"
+        android:imeOptions="flagNavigateNext"/>
 
       <EditText
-          android:id="@+id/addRequirementEtEmail"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/addRequirementEtDescription"
-          android:hint="@string/hint_requirement_email"
-          android:inputType="textEmailAddress"
-          android:imeOptions="flagNavigateNext"/>
+        android:id="@+id/addRequirementEtEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addRequirementEtDescription"
+        android:hint="@string/hint_requirement_email"
+        android:inputType="textEmailAddress"
+        android:imeOptions="flagNavigateNext"/>
 
       <EditText
-          android:id="@+id/addRequirementEtLocation"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/addRequirementEtEmail"
-          android:hint="@string/hint_requirement_location"
-          android:imeOptions="flagNavigateNext"/>
+        android:id="@+id/addRequirementEtLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addRequirementEtEmail"
+        android:hint="@string/hint_requirement_location"
+        android:imeOptions="flagNavigateNext"/>
 
 
       <EditText
-          android:id="@+id/addRequirementEtArea"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/addRequirementEtLocation"
-          android:hint="@string/hint_requirement_area"
-          android:imeOptions="flagNavigateNext"/>
+        android:id="@+id/addRequirementEtArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addRequirementEtLocation"
+        android:hint="@string/hint_requirement_area"
+        android:imeOptions="flagNavigateNext"/>
 
       <EditText
-          android:id="@+id/addRequirementEtRange"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/addRequirementEtArea"
-          android:hint="@string/hint_requirement_range"
-          android:imeOptions="flagNavigateNext"/>
+        android:id="@+id/addRequirementEtRange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addRequirementEtArea"
+        android:hint="@string/hint_requirement_range"
+        android:imeOptions="flagNavigateNext"/>
 
       <EditText
-          android:id="@+id/addRequirementEtPrice"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/addRequirementEtRange"
-          android:hint="@string/hint_requirement_price"
-          android:imeOptions="flagNavigateNext"/>
+        android:id="@+id/addRequirementEtPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addRequirementEtRange"
+        android:hint="@string/hint_requirement_price"
+        android:imeOptions="flagNavigateNext"/>
 
       <EditText
-          android:id="@+id/addRequirementEtPriceRange"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/addRequirementEtPrice"
-          android:hint="@string/hint_requirement_price_range"
-          android:imeOptions="actionDone"/>
+        android:id="@+id/addRequirementEtPriceRange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addRequirementEtPrice"
+        android:hint="@string/hint_requirement_price_range"
+        android:imeOptions="actionDone"/>
 
       <Spinner
-          android:id="@+id/addRequirementSpType"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/addRequirementEtPriceRange"
-          android:entries="@array/array_requirement_type"
-          android:layout_margin="10dp">
+        android:id="@+id/addRequirementSpType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addRequirementEtPriceRange"
+        android:entries="@array/array_requirement_type"
+        android:layout_margin="10dp">
       </Spinner>
 
       <Button
-          android:id="@+id/addRequirementBtnSubmit"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/addRequirementSpType"
-          android:text="@string/btn_submit"
-          android:layout_centerHorizontal="true"/>
+        android:id="@+id/addRequirementBtnSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addRequirementSpType"
+        android:text="@string/btn_submit"
+        android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
   </ScrollView>

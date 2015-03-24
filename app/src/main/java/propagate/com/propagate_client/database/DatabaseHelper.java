@@ -32,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   public static final String KEY_dist_name = "name";
   public static final String KEY_created_by = "created_by";
   public static final String KEY_count = "count";
+  public static final String KEY_server_dist_id = "server_dist_id";
 
   //Distribution Members Table Column names
   public static final String KEY_contact_id = "contact_id";
@@ -50,6 +51,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   public static final String KEY_price = "price";
   public static final String KEY_price_range = "price_range";
   public static final String KEY_type = "type";
+  public static final String KEY_server_prop_id = "server_prop_id";
+  public static final String KEY_server_req_id = "server_req_id";
 
   public DatabaseHelper(Context context){
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -59,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   public void onCreate(SQLiteDatabase db) {
     String CREATE_DIST_DETAIL = "CREATE TABLE " + TABLE_DIST_DETAIL + "("
         + KEY_id + " INTEGER PRIMARY KEY,"+ KEY_dist_name + " TEXT,"+KEY_created_by+ " TEXT,"+KEY_created+ " TEXT,"
-        +KEY_count+" INTEGER,"+KEY_status+" INTEGER)";
+        +KEY_count+" INTEGER,"+KEY_status+" INTEGER,"+KEY_server_dist_id+" TEXT)";
     db.execSQL(CREATE_DIST_DETAIL);
 
     String CREATE_DIST_MEMBERS = "CREATE TABLE " + TABLE_DIST_MEMBERS + "("
@@ -68,13 +71,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     db.execSQL(CREATE_DIST_MEMBERS);
 
     String CREATE_PROPERTY = "CREATE TABLE " + TABLE_PROPERTY + "("
-        + KEY_id + " INTEGER PRIMARY KEY,"+ KEY_title + " TEXT,"+KEY_description+ " TEXT,"+KEY_agent_id+ " INTEGER,"+KEY_client_email+ " TEXT,"
-        +KEY_location+" TEXT,"+KEY_address+" TEXT,"+KEY_area+" TEXT,"+KEY_price+" TEXT,"+KEY_type+" TEXT,"+KEY_created+ " TEXT,"+KEY_status+" INTEGER)";
+        + KEY_id + " INTEGER PRIMARY KEY,"+ KEY_title + " TEXT,"+KEY_description+ " TEXT,"+KEY_agent_id+ " INTEGER,"
+        +KEY_client_email+ " TEXT,"+KEY_location+" TEXT,"+KEY_address+" TEXT,"+KEY_area+" TEXT,"+KEY_price+" TEXT,"
+        +KEY_type+" TEXT,"+KEY_created+ " TEXT,"+KEY_status+" INTEGER,"+KEY_server_prop_id+" TEXT)";
     db.execSQL(CREATE_PROPERTY);
 
     String CREATE_REQUIREMENT = "CREATE TABLE " + TABLE_REQUIREMENT + "("
         + KEY_id + " INTEGER PRIMARY KEY,"+ KEY_title + " TEXT,"+KEY_description+ " TEXT,"+KEY_client_email+ " TEXT,"
-        +KEY_location+" TEXT,"+KEY_area+" TEXT,"+KEY_range+" TEXT,"+KEY_price+" TEXT,"+KEY_price_range+" TEXT,"+KEY_type+" TEXT,"+KEY_created+ " TEXT,"+KEY_status+" INTEGER)";
+        +KEY_location+" TEXT,"+KEY_area+" TEXT,"+KEY_range+" TEXT,"+KEY_price+" TEXT,"+KEY_price_range+" TEXT,"
+        +KEY_type+" TEXT,"+KEY_created+ " TEXT,"+KEY_status+" INTEGER,"+KEY_server_req_id+" TEXT)";
     db.execSQL(CREATE_REQUIREMENT);
   }
 

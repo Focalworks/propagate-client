@@ -248,11 +248,12 @@ public class PropertyModule implements Serializable{
   }
 
   /*Update  status*/
-  public void updatePropertyStatus(Context context,long pid){
+  public void updatePropertyStatus(Context context,long pid,long prop_id){
     DatabaseHelper databaseHelper = new DatabaseHelper(context);
     db = databaseHelper.open();
 
     ContentValues values = new ContentValues();
+    values.put(databaseHelper.KEY_server_prop_id, prop_id);
     values.put(databaseHelper.KEY_status, 1);
     db.update(databaseHelper.TABLE_PROPERTY, values, databaseHelper.KEY_id+"="+pid, null);
     databaseHelper.close();

@@ -29,7 +29,7 @@ public class AppController extends Application {
 
 	public static final String TAG = AppController.class.getSimpleName();
   private SessionManager sessionManager;
-  private long group_id;
+  private long id;
   private String isoCode;
 
 	private RequestQueue mRequestQueue;
@@ -147,15 +147,15 @@ public class AppController extends Application {
   * Post Created Distribution List
   * */
   public void postCreateDistList(long g_id){
-    group_id = g_id;
+    id = g_id;
     ArrayList<DistListModule> distInfo = new ArrayList<DistListModule>();
-    distInfo = DistListModule.getInstance().getDistLists(getApplicationContext(),group_id);
+    distInfo = DistListModule.getInstance().getDistLists(getApplicationContext(),id);
     String distListName = "";
     if(distInfo.size() != 0)
       distListName = distInfo.get(0).getDist_name();
 
     ArrayList<DistListModule> distMemberInfo = new ArrayList<DistListModule>();
-    distMemberInfo = DistListModule.getInstance().getDistListMembers(getApplicationContext(), group_id);
+    distMemberInfo = DistListModule.getInstance().getDistListMembers(getApplicationContext(), id);
     JSONArray contacts = new JSONArray();
 
     if(distMemberInfo != null) {
@@ -196,9 +196,9 @@ public class AppController extends Application {
 
   Response.Listener<String> distListRequestListener = new Response.Listener<String>() {
     @Override
-    public void onResponse(String g_id) {
-      Log.i("dist list response",g_id);
-      DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id);
+    public void onResponse(String server_group_id) {
+      Log.i("dist list response",server_group_id);
+      DistListModule.getInstance().updateDistListStatus(getApplicationContext(), id,Long.parseLong(server_group_id));
     }
   };
 
@@ -213,7 +213,8 @@ public class AppController extends Application {
   * Post Created Property
   * */
 
-  public void postCreateProperty(long id){
+  public void postCreateProperty(long prop_id){
+      id = prop_id;
     ArrayList<PropertyModule> propertyList = new ArrayList<PropertyModule>();
     propertyList = PropertyModule.getInstance().getPropertyInfo(getApplicationContext(),id);
     PropertyModule propertyInfo = null;
@@ -253,6 +254,7 @@ public class AppController extends Application {
     @Override
     public void onResponse(String property_id) {
       Log.i("add property response",property_id);
+        PropertyModule.getInstance().updatePropertyStatus(getApplicationContext(),id,Long.parseLong(property_id));
     }
   };
 
@@ -305,8 +307,9 @@ public class AppController extends Application {
 
   Response.Listener<String> createRequirementRequestListener = new Response.Listener<String>() {
     @Override
-    public void onResponse(String property_id) {
-      Log.i("add requirement res",property_id);
+    public void onResponse(String req_id) {
+      Log.i("add requirement res",req_id);
+        RequirementModule.getInstance().updateRequirementStatus(getApplicationContext(),id,Long.parseLong(req_id));
     }
   };
 

@@ -268,13 +268,14 @@ public class RequirementModule implements Serializable{
   }
 
   /*Update  status*/
-  public void updateRequirementStatus(Context context,long pid){
+  public void updateRequirementStatus(Context context,long rid,long req_id){
     DatabaseHelper databaseHelper = new DatabaseHelper(context);
     db = databaseHelper.open();
 
     ContentValues values = new ContentValues();
+    values.put(databaseHelper.KEY_server_req_id, req_id);
     values.put(databaseHelper.KEY_status, 1);
-    db.update(databaseHelper.TABLE_REQUIREMENT, values, databaseHelper.KEY_id+"="+pid, null);
+    db.update(databaseHelper.TABLE_REQUIREMENT, values, databaseHelper.KEY_id+"="+rid, null);
     databaseHelper.close();
     Log.i("Database", "Updated Requirement Status");
   }
