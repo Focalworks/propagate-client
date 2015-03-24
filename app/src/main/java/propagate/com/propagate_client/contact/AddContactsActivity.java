@@ -1,8 +1,8 @@
 package propagate.com.propagate_client.contact;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -24,7 +24,7 @@ import propagate.com.propagate_client.distributionList.CreateDistListActivity;
 /**
  * Created by kaustubh on 20/1/15.
  */
-public class AddContactsActivity extends ActionBarActivity implements ContactAdapter.GroupInterface {
+public class AddContactsActivity extends Activity implements ContactAdapter.GroupInterface {
 
   ListView listContact;
   EditText etSearch;
@@ -149,7 +149,7 @@ public class AddContactsActivity extends ActionBarActivity implements ContactAda
   }
 
   public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.menu_btn_create_done, menu);
+    getMenuInflater().inflate(R.menu.menu_done, menu);
     return true;
   }
 

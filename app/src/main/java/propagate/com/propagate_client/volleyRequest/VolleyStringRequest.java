@@ -1,8 +1,10 @@
 package propagate.com.propagate_client.volleyRequest;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -53,7 +55,13 @@ public class VolleyStringRequest extends StringRequest {
   }
 
   @Override
+  protected Response<String> parseNetworkResponse(NetworkResponse response) {
+    return super.parseNetworkResponse(response);
+  }
+
+  @Override
   protected VolleyError parseNetworkError(VolleyError volleyError) {
-    return super.parseNetworkError(volleyError);
+    Log.i("error code", "" + volleyError.networkResponse.statusCode);
+    return volleyError;
   }
 }

@@ -39,4 +39,12 @@
   <string name="hint_requirement_price">Price</string>
   <string name="hint_requirement_price_range">Price Range</string>
 
+  <!-- Menu -->
+  <string name="menu_dist_list">Distribution List</string>
+  <string name="menu_property">Property</string>
+  <string name="menu_requirement">Requirement</string>
+  <string name="menu_logout">Logout</string>
+  <string name="menu_Edit">Edit</string>
+  <string name="menu_search">Search</string>
+  <string name="search_hint">Search Member...</string>
 </resources>

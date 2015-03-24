@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import propagate.com.propagate_client.utils.CommonFunctions;
@@ -13,7 +14,7 @@ import propagate.com.propagate_client.utils.CommonFunctions;
 /**
  * Created by kaustubh on 19/3/15.
  */
-public class RequirementModule {
+public class RequirementModule implements Serializable{
 
   private SQLiteDatabase db;
   private ContentValues contentValues;
@@ -54,6 +55,19 @@ public class RequirementModule {
     this.price_range = price_range;
     this.type = type;
   }
+
+  public RequirementModule(long r_id, String title, String description, String client_email, String location, String area, String range, String price, String price_range, String type) {
+    this.r_id = r_id;
+    this.title = title;
+    this.description = description;
+    this.client_email = client_email;
+    this.location = location;
+    this.area = area;
+    this.range = range;
+    this.price = price;
+    this.price_range = price_range;
+    this.type = type;
+   }
 
   public RequirementModule(long r_id, String title, String description, String client_email, String location, String area, String range, String price, String price_range, String type, String created, int status) {
     this.r_id = r_id;
@@ -232,6 +246,27 @@ public class RequirementModule {
     return requirementList;
   }
 
+  /*Update  requirement*/
+  public void updateRequirement(Context context,RequirementModule requirementModule){
+    DatabaseHelper databaseHelper = new DatabaseHelper(context);
+    db = databaseHelper.open();
+
+    ContentValues values = new ContentValues();
+    values.put(databaseHelper.KEY_title, requirementModule.getTitle());
+    values.put(databaseHelper.KEY_description, requirementModule.getDescription());
+    values.put(databaseHelper.KEY_client_email, requirementModule.getClient_email());
+    values.put(databaseHelper.KEY_location, requirementModule.getLocation());
+    values.put(databaseHelper.KEY_area, requirementModule.getArea());
+    values.put(databaseHelper.KEY_range, requirementModule.getRange());
+    values.put(databaseHelper.KEY_price, requirementModule.getPrice());
+    values.put(databaseHelper.KEY_price_range, requirementModule.getPrice_range());
+    values.put(databaseHelper.KEY_type, requirementModule.getType());
+    values.put(databaseHelper.KEY_status, 0);
+    db.update(databaseHelper.TABLE_REQUIREMENT, values, databaseHelper.KEY_id+"="+requirementModule.getR_id(), null);
+    databaseHelper.close();
+    Log.i("Database", "Updated Requirement");
+  }
+
   /*Update  status*/
   public void updateRequirementStatus(Context context,long pid){
     DatabaseHelper databaseHelper = new DatabaseHelper(context);
@@ -240,6 +275,16 @@ public class RequirementModule {
     ContentValues values = new ContentValues();
     values.put(databaseHelper.KEY_status, 1);
     db.update(databaseHelper.TABLE_REQUIREMENT, values, databaseHelper.KEY_id+"="+pid, null);
+    databaseHelper.close();
     Log.i("Database", "Updated Requirement Status");
+  }
+
+  /*delete requirement*/
+  public void deleteProperty(Context context, long rid){
+    DatabaseHelper databaseHelper = new DatabaseHelper(context);
+    db = databaseHelper.open();
+    db.delete(databaseHelper.TABLE_REQUIREMENT, databaseHelper.KEY_id + "=" + rid, null);
+    databaseHelper.close();
+    Log.i("Database", "Deleted Requirement");
   }
 }

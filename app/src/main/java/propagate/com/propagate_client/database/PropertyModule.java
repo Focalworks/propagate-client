@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import propagate.com.propagate_client.utils.CommonFunctions;
@@ -13,7 +14,7 @@ import propagate.com.propagate_client.utils.CommonFunctions;
 /**
  * Created by kaustubh on 17/3/15.
  */
-public class PropertyModule {
+public class PropertyModule implements Serializable{
 
   private SQLiteDatabase db;
   private ContentValues contentValues;
@@ -47,6 +48,19 @@ public class PropertyModule {
   public PropertyModule(String title,String desc,int agent_id,String client_email,String location,String address,String area,String price,String type){
     this.title = title;
     this.desc = desc;
+    this.agent_id = agent_id;
+    this.client_email = client_email;
+    this.location = location;
+    this.address = address;
+    this.area = area;
+    this.price = price;
+    this.type = type;
+  }
+
+  public PropertyModule(long id, String title, String description, int agent_id, String client_email, String location, String address, String area, String price, String type) {
+    this.p_id = id;
+    this.title = title;
+    this.desc = description;
     this.agent_id = agent_id;
     this.client_email = client_email;
     this.location = location;
@@ -241,7 +255,39 @@ public class PropertyModule {
     ContentValues values = new ContentValues();
     values.put(databaseHelper.KEY_status, 1);
     db.update(databaseHelper.TABLE_PROPERTY, values, databaseHelper.KEY_id+"="+pid, null);
+    databaseHelper.close();
+    Log.i("Database", "Updated Property");
+  }
+
+  /*Update  details*/
+  public void updateProperty(Context context,PropertyModule propertyModule){
+    DatabaseHelper databaseHelper = new DatabaseHelper(context);
+    db = databaseHelper.open();
+
+    ContentValues values = new ContentValues();
+    values.put(databaseHelper.KEY_title, propertyModule.getTitle());
+    values.put(databaseHelper.KEY_description, propertyModule.getDesc());
+    values.put(databaseHelper.KEY_agent_id, propertyModule.getAgent_id());
+    values.put(databaseHelper.KEY_client_email, propertyModule.getClient_email());
+    values.put(databaseHelper.KEY_location, propertyModule.getLocation());
+    values.put(databaseHelper.KEY_address, propertyModule.getAddress());
+    values.put(databaseHelper.KEY_area, propertyModule.getArea());
+    values.put(databaseHelper.KEY_price, propertyModule.getPrice());
+    values.put(databaseHelper.KEY_type, propertyModule.getType());
+    values.put(databaseHelper.KEY_status, 0);
+    db.update(databaseHelper.TABLE_PROPERTY, values, databaseHelper.KEY_id+"="+propertyModule.getP_id(), null);
+    databaseHelper.close();
     Log.i("Database", "Updated Property Status");
+  }
+
+
+  /*delete property*/
+  public void deleteProperty(Context context, long pid){
+    DatabaseHelper databaseHelper = new DatabaseHelper(context);
+    db = databaseHelper.open();
+    db.delete(databaseHelper.TABLE_PROPERTY, databaseHelper.KEY_id + "=" + pid, null);
+    databaseHelper.close();
+    Log.i("Database", "Deleted Property");
   }
 
 }

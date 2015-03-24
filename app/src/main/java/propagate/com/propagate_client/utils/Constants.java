@@ -23,8 +23,8 @@ public class Constants {
   * Urls
   * */
 //  private static String baseUrl = "http://192.168.7.150/propaget/prop_lravel5/propaget/public/";
-  private static String baseUrl = "http://192.168.7.205/RND/laravel_rnd/propaget/public/";
-//  private static String baseUrl = "http://192.168.7.102/propagate/public/";
+//  private static String baseUrl = "http://192.168.7.205/RND/laravel_rnd/propaget/public/";
+  private static String baseUrl = "http://192.168.7.102/laravel/public/";
   public static String getSessionTokenUrl = baseUrl + "get-token";
   public static String registerDeviceUrl = baseUrl + "register-device";
   public static String loginUrl = baseUrl + "mobile/login";
@@ -33,4 +33,9 @@ public class Constants {
   public static String createPropertyUrl = baseUrl + "property";
   public static String createRequirementUrl = baseUrl + "req-list";
   public static String testUrl = baseUrl + "test-me";
+
+
+  public static String test = baseUrl + "test";
+  public static String testBad = baseUrl + "test-bad";
+  public static String testAuth = baseUrl + "test-auth";
 }

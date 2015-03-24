@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <TextView
+      android:id="@+id/view_property_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:text="Title"/>
+
+  <TextView
+      android:id="@+id/view_property_description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_property_title"
+      android:text="description"/>
+
+  <TextView
+      android:id="@+id/view_property_client_email"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_property_description"
+      android:text="client email"/>
+
+  <TextView
+      android:id="@+id/view_property_location"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_property_client_email"
+      android:text="location"/>
+
+  <TextView
+      android:id="@+id/view_property_address"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_property_location"
+      android:text="address"/>
+
+  <TextView
+      android:id="@+id/view_property_area"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_property_address"
+      android:text="area"/>
+
+  <TextView
+      android:id="@+id/view_property_price"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_property_area"
+      android:text="price"/>
+
+
+  <TextView
+      android:id="@+id/view_property_type"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_property_price"
+      android:text="type"/>
+
+</RelativeLayout>

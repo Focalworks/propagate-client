@@ -1,8 +1,8 @@
 package propagate.com.propagate_client.distributionList;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +24,7 @@ import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.volleyRequest.AppController;
 
-public class CreateDistListActivity extends ActionBarActivity implements ContactAdapter.GroupInterface{
+public class CreateDistListActivity extends Activity implements ContactAdapter.GroupInterface{
 
   ImageView btnAddMember;
   EditText etGroupName;
@@ -118,7 +118,7 @@ public class CreateDistListActivity extends ActionBarActivity implements Contact
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.menu_btn_create_done, menu);
+    getMenuInflater().inflate(R.menu.menu_done, menu);
     return super.onCreateOptionsMenu(menu);
   }
 

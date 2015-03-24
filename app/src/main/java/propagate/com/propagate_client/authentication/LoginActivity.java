@@ -1,5 +1,6 @@
 package propagate.com.propagate_client.authentication;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -26,7 +27,7 @@ import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
 /**
  * Created by kaustubh on 11/3/15.
  */
-public class LoginActivity extends ActionBarActivity{
+public class LoginActivity extends Activity {
 
   GoogleCloudMessaging gcm;
   String regId;
@@ -124,7 +125,7 @@ public class LoginActivity extends ActionBarActivity{
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_login, menu);
+    getMenuInflater().inflate(R.menu.menu_main, menu);
     return true;
   }
 
@@ -136,9 +137,9 @@ public class LoginActivity extends ActionBarActivity{
     int id = item.getItemId();
 
     //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
+    /*if (id == R.id.action_settings) {
       return true;
-    }
+    }*/
 
     return super.onOptionsItemSelected(item);
   }

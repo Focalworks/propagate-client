@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:compat="http://schemas.android.com/res-auto">
+
+  <!-- Refresh -->
+  <item android:id="@+id/action_dist_list"
+        android:title="@string/menu_dist_list"
+        compat:showAsAction="always"/>
+
+  <!-- Help -->
+  <item android:id="@+id/action_property"
+        android:title="@string/menu_property"
+        compat:showAsAction="always"/>
+
+  <!-- Check updates -->
+  <item android:id="@+id/action_requirement"
+        android:title="@string/menu_requirement"
+        compat:showAsAction="always"/>
+
+  <!-- Logout -->
+  <item android:id="@+id/action_logout"
+        android:title="@string/menu_logout"
+        compat:showAsAction="always"/>
+</menu>

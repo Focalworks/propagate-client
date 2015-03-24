@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <TextView
+      android:id="@+id/view_requirement_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:text="Title"/>
+
+  <TextView
+      android:id="@+id/view_requirement_description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_requirement_title"
+      android:text="description"/>
+
+  <TextView
+      android:id="@+id/view_requirement_client_email"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_requirement_description"
+      android:text="client email"/>
+
+  <TextView
+      android:id="@+id/view_requirement_location"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_requirement_client_email"
+      android:text="location"/>
+
+  <TextView
+      android:id="@+id/view_requirement_area"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_requirement_location"
+      android:text="area"/>
+
+  <TextView
+      android:id="@+id/view_requirement_range"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_requirement_area"
+      android:text="range"/>
+
+  <TextView
+      android:id="@+id/view_requirement_price"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_requirement_range"
+      android:text="price"/>
+
+  <TextView
+      android:id="@+id/view_requirement_price_range"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_requirement_price"
+      android:text="price"/>
+
+  <TextView
+      android:id="@+id/view_requirement_type"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="15sp"
+      android:layout_below="@+id/view_requirement_price_range"
+      android:text="type"/>
+
+</RelativeLayout>

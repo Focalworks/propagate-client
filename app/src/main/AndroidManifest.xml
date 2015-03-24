@@ -56,9 +56,13 @@
         android:name=".distributionList.DistListingActivity"
         android:label="@string/app_name"
         android:windowSoftInputMode="adjustResize|stateHidden">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
     </activity>
     <activity
-        android:name=".distributionList.DistributionListDetailActivity"
+        android:name=".distributionList.DistListDetailActivity"
         android:label="@string/app_name"
         android:windowSoftInputMode="adjustResize|stateHidden">
     </activity>
@@ -71,10 +75,6 @@
         android:name=".property.PropertyListingActivity"
         android:label="@string/app_name"
         android:windowSoftInputMode="adjustResize|stateHidden">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
     </activity>
     <activity
         android:name=".Requirement.AddRequirementActivity"
@@ -83,6 +83,21 @@
     </activity>
     <activity
         android:name=".Requirement.RequirementListingActivity"
+        android:label="@string/app_name"
+        android:windowSoftInputMode="adjustResize|stateHidden">
+    </activity>
+    <activity
+        android:name=".property.PropertyDetailActivity"
+        android:label="@string/app_name"
+        android:windowSoftInputMode="adjustResize|stateHidden">
+    </activity>
+    <activity
+        android:name=".Requirement.RequirementDetailActivity"
+        android:label="@string/app_name"
+        android:windowSoftInputMode="adjustResize|stateHidden">
+    </activity>
+    <activity
+        android:name=".distributionList.DistListAddMemberActivity"
         android:label="@string/app_name"
         android:windowSoftInputMode="adjustResize|stateHidden">
     </activity>

@@ -1,5 +1,6 @@
 package propagate.com.propagate_client.authentication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ import propagate.com.propagate_client.gcm.RegisterDeviceTask;
 import propagate.com.propagate_client.volleyRequest.AppController;
 
 
-public class LoginSelectionActivity extends ActionBarActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks,RegisterDeviceTask.OnTaskExecutionFinished {
+public class LoginSelectionActivity extends Activity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks,RegisterDeviceTask.OnTaskExecutionFinished {
 
   private Button btnDefaultLogin;
   private SignInButton btnGPlusLogin;
@@ -290,7 +291,7 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_login, menu);
+    getMenuInflater().inflate(R.menu.menu_main, menu);
     return true;
   }
 
@@ -302,9 +303,9 @@ public class LoginSelectionActivity extends ActionBarActivity implements View.On
     int id = item.getItemId();
 
     //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
+    /*if (id == R.id.action_settings) {
       return true;
-    }
+    }*/
 
     return super.onOptionsItemSelected(item);
   }

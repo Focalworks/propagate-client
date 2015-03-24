@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by kaustubh on 12/3/15.
@@ -254,6 +256,16 @@ public class CommonFunctions {
     } catch (PackageManager.NameNotFoundException e) {
       return 0;
     }
+  }
+
+  // validating email id
+  private boolean isValidEmail(String email) {
+    String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+    Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+    Matcher matcher = pattern.matcher(email);
+    return matcher.matches();
   }
 
 }

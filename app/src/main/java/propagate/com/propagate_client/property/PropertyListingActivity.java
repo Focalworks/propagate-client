@@ -1,24 +1,47 @@
 package propagate.com.propagate_client.property;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import propagate.com.propagate_client.R;
+import propagate.com.propagate_client.Requirement.RequirementListingActivity;
 import propagate.com.propagate_client.database.PropertyModule;
+import propagate.com.propagate_client.distributionList.DistListingActivity;
+import propagate.com.propagate_client.utils.Constants;
+import propagate.com.propagate_client.volleyRequest.AppController;
+import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
 
 /**
  * Created by kaustubh on 19/3/15.
  */
-public class PropertyListingActivity extends ActionBarActivity {
+public class PropertyListingActivity extends Activity {
 
   ListView propertyListView;
-  ImageView imgAddButton;
+  ImageView imgAddProperty;
   PropertyListAdapter propertyListAdapter;
 
   @Override
@@ -26,8 +49,9 @@ public class PropertyListingActivity extends ActionBarActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_listing);
 
-    imgAddButton = (ImageView) findViewById(R.id.imgAddBtn);
-    imgAddButton.setOnClickListener(new View.OnClickListener() {
+    imgAddProperty = (ImageView) findViewById(R.id.imgAddBtn);
+    imgAddProperty.setVisibility(View.VISIBLE);
+    imgAddProperty.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         loadAddPropertyActivity();
@@ -44,12 +68,151 @@ public class PropertyListingActivity extends ActionBarActivity {
     propertyListView = (ListView) findViewById(R.id.listingListView);
     propertyListView.setAdapter(propertyListAdapter);
 
+    propertyListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+      @Override
+      public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        PropertyModule propertyModule = propertyListAdapter.getItem(position);
+        showRemovePopup(propertyModule);
+        return false;
+      }
+    });
+
+    propertyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        PropertyModule propertyModule = propertyListAdapter.getItem(position);
+        Intent intent = new Intent(getApplicationContext(),PropertyDetailActivity.class);
+        intent.putExtra("propertyModule",propertyModule);
+        startActivity(intent);
+        finish();
+      }
+    });
+
+
+//    testErrorMessage();
   }
 
   private void loadAddPropertyActivity(){
     Intent intent = new Intent(getApplicationContext(),AddPropertyActivity.class);
     startActivity(intent);
     finish();
+  }
+
+  private void testErrorMessage(){
+    VolleyStringRequest postRequest = new VolleyStringRequest(
+        Request.Method.GET,
+        Constants.test,
+        null,
+        requestListener,
+        requestErrorListener,
+        getApplicationContext()
+    );
+    AppController.getInstance().addToRequestQueue(postRequest);
+  }
+
+  Response.Listener<String> requestListener = new Response.Listener<String>() {
+    @Override
+    public void onResponse(String response) {
+    }
+  };
+
+  Response.ErrorListener requestErrorListener = new Response.ErrorListener() {
+    @Override
+    public void onErrorResponse(VolleyError error) {
+      String json = null;
+      NetworkResponse response = error.networkResponse;
+      if(response != null && response.data != null){
+        switch(response.statusCode){
+          case 422:
+            json = new String(response.data);
+            json = trimMessage(json, "message");
+            if(json != null) displayMessage(json);
+            break;
+
+          case 500:
+            json = new String(response.data);
+            json = trimMessage(json, "message");
+            if(json != null) displayMessage(json);
+            break;
+        }
+      }
+    }
+  };
+
+  public String trimMessage(String json, String key){
+    String trimmedString = null;
+
+    try{
+      JSONObject jsonObj = new JSONObject(json);
+      trimmedString = jsonObj.getString(key);
+    } catch(JSONException e){
+      e.printStackTrace();
+      return null;
+    }
+
+    return trimmedString;
+  }
+
+  //Somewhere that has access to a context
+  public void displayMessage(String toastString){
+    Toast.makeText(this, toastString, Toast.LENGTH_LONG).show();
+  }
+
+  private void showRemovePopup(final PropertyModule propertyModule){
+    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+    // set dialog message
+    alertDialogBuilder
+        .setMessage("Remove property "+propertyModule.getTitle())
+        .setCancelable(false)
+        .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog,int id) {
+            PropertyModule.getInstance().deleteProperty(getApplicationContext(),propertyModule.getP_id());
+            propertyListAdapter.remove(propertyModule);
+            propertyListAdapter.notifyDataSetChanged();
+            dialog.dismiss();
+          }
+        })
+        .setNegativeButton("No",new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog,int id) {
+            dialog.dismiss();
+          }
+        });
+
+    // create alert dialog
+    AlertDialog alertDialog = alertDialogBuilder.create();
+
+    // show it
+    alertDialog.show();
+  }
+
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu_main, menu);
+
+    MenuItem item = menu.findItem(R.id.action_property);
+    item.setVisible(false);
+
+    return super.onCreateOptionsMenu(menu);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch(item.getItemId()){
+      case R.id.action_dist_list:
+        Intent intent = new Intent(this, DistListingActivity.class);
+        startActivity(intent);
+        finish();
+        return true;
+
+      case R.id.action_requirement:
+        Intent i = new Intent(this, RequirementListingActivity.class);
+        startActivity(i);
+        finish();
+        return true;
+    }
+
+    return false;
   }
 
 }
