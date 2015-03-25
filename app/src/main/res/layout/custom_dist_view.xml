@@ -15,11 +15,12 @@
     android:layout_margin="5dp"/>
 
   <ImageView
-      android:id="@+id/customDistViewImgRetry"
-      android:layout_width="30dp"
-      android:layout_height="30dp"
-      android:layout_alignParentRight="true"
-      android:src="@mipmap/ic_action_replay"/>
+    android:id="@+id/customDistViewImgRetry"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:layout_alignParentRight="true"
+    android:src="@mipmap/ic_action_replay"
+    android:visibility="gone"/>
 
   <ImageView
     android:id="@+id/customDistViewDistIcon"

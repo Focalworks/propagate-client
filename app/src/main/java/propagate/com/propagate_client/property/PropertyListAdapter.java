@@ -2,12 +2,14 @@ package propagate.com.propagate_client.property;
 
 import android.app.Activity;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -77,10 +79,26 @@ public class PropertyListAdapter extends ArrayAdapter<PropertyModule> {
       txtType.setText(propertyModule.getType());
 
       if(propertyModule.getStatus() == 0){
-
+        imgRetry.setVisibility(View.VISIBLE);
+        imgRetry.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            Toast.makeText(activity,"Retry",Toast.LENGTH_LONG).show();
+          }
+        });
       }
     }
 
     return convertView;
+  }
+
+  @Override
+  public boolean isEnabled(int position) {
+    final PropertyModule propertyModule = (PropertyModule) this.getItem(position);
+    if(propertyModule.getStatus() == 0)
+    {
+      return false;
+    }
+    return super.isEnabled(position);
   }
 }

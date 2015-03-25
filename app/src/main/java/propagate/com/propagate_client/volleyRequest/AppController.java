@@ -283,7 +283,7 @@ public class AppController extends Application {
     public void onErrorResponse(VolleyError error) {
       if(error instanceof NoConnectionError)
         Log.e("error response", "NoConnectionError");
-      else {
+      else if(error.networkResponse != null){
         Log.e("error code", "" + error.networkResponse.statusCode);
       }
     }

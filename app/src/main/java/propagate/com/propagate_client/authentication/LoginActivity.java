@@ -32,7 +32,7 @@ public class LoginActivity extends Activity {
   GoogleCloudMessaging gcm;
   String regId;
   EditText etEmail,etPassword;
-  Button btnLogin,btnLogOut;
+  Button btnLogin;
   SessionManager sessionManager;
 
   @Override
@@ -46,17 +46,10 @@ public class LoginActivity extends Activity {
     etPassword = (EditText) findViewById(R.id.loginScreenEtPassword);
 
     btnLogin = (Button) findViewById(R.id.loginScreenBtnLogin);
-    btnLogOut = (Button) findViewById(R.id.loginScreenBtnLogOut);
     btnLogin.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         loginUser();
-      }
-    });
-    btnLogOut.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        testing();
       }
     });
   }
@@ -95,31 +88,6 @@ public class LoginActivity extends Activity {
     public void onErrorResponse(VolleyError error) {
       Log.e("Login Error Response",error.toString());
     }
-  };
-
-  public void testing(){
-    VolleyStringRequest postRequest = new VolleyStringRequest(
-        Request.Method.POST,
-        Constants.testingAuthUrl,
-        null,
-        testRequestListener,
-        testRequestErrorListener,
-        getApplicationContext()
-    );
-
-    AppController.getInstance().addToRequestQueue(postRequest);
-  }
-
-  Response.Listener<String> testRequestListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String token) {
-      Log.e("test token", token);
-    }
-  };
-
-  Response.ErrorListener testRequestErrorListener = new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) { Log.e("test Error Response",error.networkResponse.headers+"");  }
   };
 
   @Override

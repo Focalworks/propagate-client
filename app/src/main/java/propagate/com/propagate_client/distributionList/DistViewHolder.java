@@ -1,5 +1,6 @@
 package propagate.com.propagate_client.distributionList;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -9,10 +10,12 @@ public class DistViewHolder {
 
   TextView txtGroupName;
   TextView txtMembersNumber;
+  ImageView imgRetry;
 
-  public DistViewHolder(TextView txtGroupName, TextView txtMembersNumber) {
+  public DistViewHolder(TextView txtGroupName, TextView txtMembersNumber, ImageView imgRetry) {
     this.txtGroupName = txtGroupName;
     this.txtMembersNumber = txtMembersNumber;
+    this.imgRetry = imgRetry;
   }
 
   public TextView getTxtGroupName() {
@@ -31,4 +34,11 @@ public class DistViewHolder {
     this.txtMembersNumber = txtMembersNumber;
   }
 
+  public ImageView getImgRetry() {
+    return imgRetry;
+  }
+
+  public void setImgRetry(ImageView imgRetry) {
+    this.imgRetry = imgRetry;
+  }
 }

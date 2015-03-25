@@ -34,13 +34,6 @@
       android:layout_gravity="center"
       android:text="@string/btnLogin"/>
 
-    <Button
-      android:id="@+id/loginScreenBtnLogOut"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:text="@string/btnLogOut"/>
-
   </LinearLayout>
 
 </RelativeLayout>

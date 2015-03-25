@@ -1,16 +1,20 @@
 package propagate.com.propagate_client.distributionList;
 
 import android.app.Activity;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.database.DistListModule;
+import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.utils.CommonFunctions;
 
 /**
@@ -41,6 +45,7 @@ public class DistListAdapter extends ArrayAdapter<DistListModule> {
 
     TextView txtGroupName;
     TextView txtMembersCount;
+    ImageView imgRetry;
 
     if(convertView == null){
       LayoutInflater layoutInflater = activity.getLayoutInflater();
@@ -48,19 +53,41 @@ public class DistListAdapter extends ArrayAdapter<DistListModule> {
 
       txtGroupName = (TextView) convertView.findViewById(R.id.customDistViewTxtGroupName);
       txtMembersCount = (TextView) convertView.findViewById(R.id.customDistViewTxtMembersCount);
+      imgRetry = (ImageView) convertView.findViewById(R.id.customDistViewImgRetry);
 
-      convertView.setTag(new DistViewHolder(txtGroupName,txtMembersCount));
+      convertView.setTag(new DistViewHolder(txtGroupName,txtMembersCount,imgRetry));
     } else {
       DistViewHolder distViewHolder = (DistViewHolder) convertView.getTag();
       txtGroupName = distViewHolder.getTxtGroupName();
       txtMembersCount = distViewHolder.getTxtMembersNumber();
+      imgRetry = distViewHolder.getImgRetry();
     }
 
-    if(groupArrayList.get(position) != null){
+    if(distListModule != null){
       txtGroupName.setText(distListModule.getDist_name());
       txtMembersCount.setText(CommonFunctions.getPlurals(distListModule.getCount(), "Member"));
+
+      if(Integer.parseInt(distListModule.getStatus()) == 0){
+        imgRetry.setVisibility(View.VISIBLE);
+        imgRetry.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            Toast.makeText(activity, "Retry", Toast.LENGTH_LONG).show();
+          }
+        });
+      }
     }
 
     return convertView;
+  }
+
+  @Override
+  public boolean isEnabled(int position) {
+    final DistListModule distListModule = (DistListModule) this.getItem(position);
+    if(Integer.parseInt(distListModule.getStatus()) == 0)
+    {
+      return false;
+    }
+    return super.isEnabled(position);
   }
 }
