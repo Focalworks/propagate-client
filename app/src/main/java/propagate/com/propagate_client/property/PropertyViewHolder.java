@@ -1,5 +1,6 @@
 package propagate.com.propagate_client.property;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -12,13 +13,15 @@ public class PropertyViewHolder {
   private TextView txtArea;
   private TextView txtPrice;
   private TextView txtType;
+  private ImageView imgRetry;
 
-  public PropertyViewHolder(TextView txtTitle, TextView txtLocation, TextView txtArea, TextView txtPrice, TextView txtType) {
+  public PropertyViewHolder(TextView txtTitle, TextView txtLocation, TextView txtArea, TextView txtPrice, TextView txtType,ImageView imgRetry) {
     this.txtTitle = txtTitle;
     this.txtLocation = txtLocation;
     this.txtArea = txtArea;
     this.txtPrice = txtPrice;
     this.txtType = txtType;
+    this.imgRetry = imgRetry;
   }
 
   public TextView getTxtTitle() {
@@ -61,4 +64,11 @@ public class PropertyViewHolder {
     this.txtType = txtType;
   }
 
+  public ImageView getImgRetry() {
+    return imgRetry;
+  }
+
+  public void setImgRetry(ImageView imgRetry) {
+    this.imgRetry = imgRetry;
+  }
 }

@@ -1,10 +1,12 @@
 package propagate.com.propagate_client.property;
 
 import android.app.Activity;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class PropertyListAdapter extends ArrayAdapter<PropertyModule> {
     TextView txtArea;
     TextView txtPrice;
     TextView txtType;
+    ImageView imgRetry;
 
     if(convertView == null){
       LayoutInflater layoutInflater = activity.getLayoutInflater();
@@ -53,8 +56,9 @@ public class PropertyListAdapter extends ArrayAdapter<PropertyModule> {
       txtArea = (TextView) convertView.findViewById(R.id.property_listing_area);
       txtPrice = (TextView) convertView.findViewById(R.id.property_listing_price);
       txtType = (TextView) convertView.findViewById(R.id.property_listing_type);
+      imgRetry = (ImageView) convertView.findViewById(R.id.property_listing_retry);
 
-      convertView.setTag(new PropertyViewHolder(txtTitle,txtLocation,txtArea,txtPrice,txtType));
+      convertView.setTag(new PropertyViewHolder(txtTitle,txtLocation,txtArea,txtPrice,txtType,imgRetry));
     }else{
       PropertyViewHolder propertyViewHolder = (PropertyViewHolder) convertView.getTag();
       txtTitle = propertyViewHolder.getTxtTitle();
@@ -62,14 +66,19 @@ public class PropertyListAdapter extends ArrayAdapter<PropertyModule> {
       txtArea = propertyViewHolder.getTxtArea();
       txtPrice = propertyViewHolder.getTxtPrice();
       txtType = propertyViewHolder.getTxtType();
+      imgRetry = propertyViewHolder.getImgRetry();
     }
 
-    if(propertyArrayList.get(position) != null){
-      txtTitle.setText(propertyArrayList.get(position).getTitle());
-      txtLocation.setText(propertyArrayList.get(position).getLocation());
-      txtArea.setText(propertyArrayList.get(position).getArea());
-      txtPrice.setText(propertyArrayList.get(position).getPrice());
-      txtType.setText(propertyArrayList.get(position).getType());
+    if(propertyModule != null){
+      txtTitle.setText(propertyModule.getTitle());
+      txtLocation.setText(propertyModule.getLocation());
+      txtArea.setText(propertyModule.getArea());
+      txtPrice.setText(propertyModule.getPrice());
+      txtType.setText(propertyModule.getType());
+
+      if(propertyModule.getStatus() == 0){
+
+      }
     }
 
     return convertView;

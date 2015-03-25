@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,13 +14,26 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.Requirement.RequirementListingActivity;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.property.PropertyListingActivity;
+import propagate.com.propagate_client.utils.CommonFunctions;
+import propagate.com.propagate_client.utils.Constants;
+import propagate.com.propagate_client.volleyRequest.AppController;
+import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
 
 /**
  * Created by kaustubh on 4/2/15.
@@ -37,6 +52,8 @@ public class DistListingActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_listing);
 
+//    OauthToken();
+//    getToken();
     imgAddGroup = (ImageView) findViewById(R.id.imgAddBtn);
     imgAddGroup.setVisibility(View.VISIBLE);
     imgAddGroup.setOnClickListener(new View.OnClickListener() {
@@ -138,4 +155,54 @@ public class DistListingActivity extends Activity {
     return false;
   }
 
+  private void OauthToken(){
+    VolleyStringRequest postRequest = new VolleyStringRequest(
+        Request.Method.POST,
+        "http://192.168.7.102/propaget/public/oauth/token",
+        getOauthParams(),
+        requestListener,
+        requestErrorListener,
+        getApplicationContext()
+    );
+    AppController.getInstance().addToRequestQueue(postRequest);
+  }
+
+  public Map<String,String> getOauthParams(){
+
+    Map<String, String> jsonParams = new HashMap<String, String>();
+    jsonParams.put("username", "amitav.roy@focalworks.in");
+    jsonParams.put("password", "password");
+    jsonParams.put("client_id", "testclient");
+    jsonParams.put("client_secret", "testpass");
+    jsonParams.put("grant_type", "password");
+//    b587d71a30e4c010eee38d014e2f12a8d6b54088
+    return jsonParams;
+  }
+
+  Response.Listener<String> requestListener = new Response.Listener<String>() {
+    @Override
+    public void onResponse(String response) {
+      Log.i("Reponse",response);
+    }
+  };
+
+  Response.ErrorListener requestErrorListener = new Response.ErrorListener() {
+    @Override
+    public void onErrorResponse(VolleyError error) {
+      Log.i("Error Reponse",error.toString());
+    }
+  };
+
+
+  private void getToken(){
+    VolleyStringRequest postRequest = new VolleyStringRequest(
+        Request.Method.GET,
+        "http://192.168.7.102/propaget/public/dist-list?access_token=1f90e4fc073953cda7c2edaee759807af1d74fecc",
+        null,
+        requestListener,
+        requestErrorListener,
+        getApplicationContext()
+    );
+    AppController.getInstance().addToRequestQueue(postRequest);
+  }
 }

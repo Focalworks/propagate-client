@@ -31,6 +31,7 @@ import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.Requirement.RequirementListingActivity;
 import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
+import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.volleyRequest.AppController;
 import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
@@ -88,7 +89,6 @@ public class PropertyListingActivity extends Activity {
       }
     });
 
-
 //    testErrorMessage();
   }
 
@@ -125,38 +125,19 @@ public class PropertyListingActivity extends Activity {
         switch(response.statusCode){
           case 422:
             json = new String(response.data);
-            json = trimMessage(json, "message");
-            if(json != null) displayMessage(json);
+            json = CommonFunctions.trimMessage(json, "message");
+            if(json != null) Toast.makeText(getApplicationContext(),""+json,Toast.LENGTH_SHORT).show();
             break;
 
           case 500:
             json = new String(response.data);
-            json = trimMessage(json, "message");
-            if(json != null) displayMessage(json);
+            json = CommonFunctions.trimMessage(json, "message");
+            if(json != null) Toast.makeText(getApplicationContext(),""+json,Toast.LENGTH_SHORT).show();
             break;
         }
       }
     }
   };
-
-  public String trimMessage(String json, String key){
-    String trimmedString = null;
-
-    try{
-      JSONObject jsonObj = new JSONObject(json);
-      trimmedString = jsonObj.getString(key);
-    } catch(JSONException e){
-      e.printStackTrace();
-      return null;
-    }
-
-    return trimmedString;
-  }
-
-  //Somewhere that has access to a context
-  public void displayMessage(String toastString){
-    Toast.makeText(this, toastString, Toast.LENGTH_LONG).show();
-  }
 
   private void showRemovePopup(final PropertyModule propertyModule){
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);

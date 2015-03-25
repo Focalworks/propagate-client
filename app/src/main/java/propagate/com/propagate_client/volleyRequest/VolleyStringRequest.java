@@ -4,11 +4,15 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,13 +59,20 @@ public class VolleyStringRequest extends StringRequest {
   }
 
   @Override
-  protected Response<String> parseNetworkResponse(NetworkResponse response) {
-    return super.parseNetworkResponse(response);
+  protected Response parseNetworkResponse(NetworkResponse response) {
+    String parsed = null;
+    if(response.statusCode == 200) {
+      try {
+        parsed = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+      } catch (UnsupportedEncodingException e) {
+        parsed = new String(response.data);
+      }
+    }
+    return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));
   }
 
   @Override
   protected VolleyError parseNetworkError(VolleyError volleyError) {
-    Log.i("error code", "" + volleyError.networkResponse.statusCode);
     return volleyError;
   }
 }

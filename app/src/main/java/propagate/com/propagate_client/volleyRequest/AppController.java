@@ -3,8 +3,10 @@ package propagate.com.propagate_client.volleyRequest;
 import android.app.Application;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -12,6 +14,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,51 +31,51 @@ import propagate.com.propagate_client.utils.SessionManager;
 
 public class AppController extends Application {
 
-	public static final String TAG = AppController.class.getSimpleName();
+  public static final String TAG = AppController.class.getSimpleName();
   private SessionManager sessionManager;
   private long id;
   private String isoCode;
 
-	private RequestQueue mRequestQueue;
+  private RequestQueue mRequestQueue;
 
-	private static AppController mInstance;
+  private static AppController mInstance;
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		mInstance = this;
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    mInstance = this;
     isoCode = CommonFunctions.getIsoCode(getApplicationContext());
     sessionManager = new SessionManager(getApplicationContext());
-	}
+  }
 
-	public static synchronized AppController getInstance() {
-		return mInstance;
-	}
+  public static synchronized AppController getInstance() {
+    return mInstance;
+  }
 
-	public RequestQueue getRequestQueue() {
-		if (mRequestQueue == null) {
-			mRequestQueue = Volley.newRequestQueue(getApplicationContext());
-		}
+  public RequestQueue getRequestQueue() {
+    if (mRequestQueue == null) {
+      mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+    }
 
-		return mRequestQueue;
-	}
+    return mRequestQueue;
+  }
 
-	public <T> void addToRequestQueue(Request<T> req, String tag) {
-		// set the default tag if tag is empty
-		req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-		getRequestQueue().add(req);
-	}
+  public <T> void addToRequestQueue(Request<T> req, String tag) {
+    // set the default tag if tag is empty
+    req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
+    getRequestQueue().add(req);
+  }
 
-	public <T> void addToRequestQueue(Request<T> req) {
-		req.setTag(TAG);
-		getRequestQueue().add(req);
-	}
+  public <T> void addToRequestQueue(Request<T> req) {
+    req.setTag(TAG);
+    getRequestQueue().add(req);
+  }
 
-	public void cancelPendingRequests(Object tag) {
-		if (mRequestQueue != null) {
-			mRequestQueue.cancelAll(tag);
-		}
-	}
+  public void cancelPendingRequests(Object tag) {
+    if (mRequestQueue != null) {
+      mRequestQueue.cancelAll(tag);
+    }
+  }
 
   /*
   * Retrieve session token for authentication
@@ -171,7 +175,7 @@ public class AppController extends Application {
 
     VolleyStringRequest postRequest = new VolleyStringRequest(
         Request.Method.POST,
-        Constants.testUrl,
+        Constants.postDistListUrl,
         getGroupParams(contacts,distListName),
         distListRequestListener,
         distListRequestErrorListener,
@@ -214,7 +218,7 @@ public class AppController extends Application {
   * */
 
   public void postCreateProperty(long prop_id){
-      id = prop_id;
+    id = prop_id;
     ArrayList<PropertyModule> propertyList = new ArrayList<PropertyModule>();
     propertyList = PropertyModule.getInstance().getPropertyInfo(getApplicationContext(),id);
     PropertyModule propertyInfo = null;
@@ -252,16 +256,36 @@ public class AppController extends Application {
 
   Response.Listener<String> createPropertyRequestListener = new Response.Listener<String>() {
     @Override
-    public void onResponse(String property_id) {
-      Log.i("add property response",property_id);
-        PropertyModule.getInstance().updatePropertyStatus(getApplicationContext(),id,Long.parseLong(property_id));
+    public void onResponse(String response) {
+      if(response != null){
+        String message = CommonFunctions.trimMessage(response, "message");
+        if(message != null)
+          Toast.makeText(getApplicationContext(), "" + message, Toast.LENGTH_SHORT).show();
+
+        String data = CommonFunctions.trimMessage(response, "data");
+        long property_id = 0;
+        if(data != null)
+          try {
+            Log.i("data",data);
+            JSONObject jsonObj = new JSONObject(data);
+            property_id = jsonObj.getLong(data);
+          } catch (JSONException e) {
+            e.printStackTrace();
+          }
+
+        PropertyModule.getInstance().updatePropertyStatus(getApplicationContext(),id,property_id);
+      }
     }
   };
 
   Response.ErrorListener createPropertyRequestErrorListener = new Response.ErrorListener() {
     @Override
     public void onErrorResponse(VolleyError error) {
-      Log.e("Error Response",error.networkResponse.statusCode+"");
+      if(error instanceof NoConnectionError)
+        Log.e("error response", "NoConnectionError");
+      else {
+        Log.e("error code", "" + error.networkResponse.statusCode);
+      }
     }
   };
 
@@ -309,7 +333,7 @@ public class AppController extends Application {
     @Override
     public void onResponse(String req_id) {
       Log.i("add requirement res",req_id);
-        RequirementModule.getInstance().updateRequirementStatus(getApplicationContext(),id,Long.parseLong(req_id));
+      RequirementModule.getInstance().updateRequirementStatus(getApplicationContext(),id,Long.parseLong(req_id));
     }
   };
 
@@ -320,4 +344,4 @@ public class AppController extends Application {
     }
   };
 
- }
+}

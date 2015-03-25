@@ -13,11 +13,15 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -259,13 +263,27 @@ public class CommonFunctions {
   }
 
   // validating email id
-  private boolean isValidEmail(String email) {
+  public static boolean isValidEmail(String email) {
     String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
         + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     Pattern pattern = Pattern.compile(EMAIL_PATTERN);
     Matcher matcher = pattern.matcher(email);
     return matcher.matches();
+  }
+
+  public static String trimMessage(String json, String key){
+    String trimmedString = null;
+
+    try{
+      JSONObject jsonObj = new JSONObject(json);
+      trimmedString = jsonObj.getString(key);
+    } catch(JSONException e){
+      e.printStackTrace();
+      return null;
+    }
+
+    return trimmedString;
   }
 
 }

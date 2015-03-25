@@ -9,8 +9,16 @@
     android:id="@+id/property_listing_title"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layout_toLeftOf="@+id/property_listing_retry"
     android:text="Title"
     android:textSize="20sp"/>
+
+  <ImageView
+      android:id="@+id/property_listing_retry"
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      android:layout_alignParentRight="true"
+      android:src="@mipmap/ic_action_replay"/>
 
   <TextView
     android:id="@+id/property_listing_location"
