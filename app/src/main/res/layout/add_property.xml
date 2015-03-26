@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_property_title"
+        android:inputType="textAutoComplete"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addPropertyEtTitle"
         android:hint="@string/hint_property_description"
+        android:inputType="textAutoComplete"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -43,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addPropertyEtEmail"
         android:hint="@string/hint_property_location"
+        android:inputType="textAutoComplete"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -51,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addPropertyEtLocation"
         android:hint="@string/hint_property_address"
+        android:inputType="textAutoComplete"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -59,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addPropertyEtAddress"
         android:hint="@string/hint_property_area"
+        android:inputType="number"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -67,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addPropertyEtArea"
         android:hint="@string/hint_property_price"
+        android:inputType="number"
         android:imeOptions="actionDone"/>
 
       <Spinner

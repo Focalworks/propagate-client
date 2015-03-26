@@ -1,5 +1,6 @@
 package propagate.com.propagate_client.volleyRequest;
 
+import android.app.Activity;
 import android.app.Application;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,30 +23,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import propagate.com.propagate_client.authentication.LoginSessionManager;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.database.RequirementModule;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
-import propagate.com.propagate_client.utils.SessionManager;
 
-public class AppController extends Application {
+public class AppController extends Application implements APIHandlerInterface{
 
   public static final String TAG = AppController.class.getSimpleName();
-  private SessionManager sessionManager;
   private long id;
   private String isoCode;
-
   private RequestQueue mRequestQueue;
-
   private static AppController mInstance;
+  private static LoginSessionManager loginSessionManager;
 
   @Override
   public void onCreate() {
     super.onCreate();
     mInstance = this;
+    loginSessionManager = new LoginSessionManager(this);
     isoCode = CommonFunctions.getIsoCode(getApplicationContext());
-    sessionManager = new SessionManager(getApplicationContext());
   }
 
   public static synchronized AppController getInstance() {
@@ -76,37 +75,6 @@ public class AppController extends Application {
       mRequestQueue.cancelAll(tag);
     }
   }
-
-  /*
-  * Retrieve session token for authentication
-  * */
-  public void getSessionToken(){
-    VolleyStringRequest getSessionTokenRequest = new VolleyStringRequest(
-        Request.Method.GET,
-        Constants.getSessionTokenUrl,
-        null,
-        requestSessionListener,
-        requestSessionErrorListener,
-        getApplicationContext()
-    );
-    addToRequestQueue(getSessionTokenRequest);
-  }
-
-  Response.Listener<String> requestSessionListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String token) {
-      Log.e("Response token", token);
-      sessionManager.createLoginSessionToken(token);
-    }
-  };
-
-  Response.ErrorListener requestSessionErrorListener = new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) {
-      Log.e("Error Response",error.toString());
-    }
-  };
-
 
   /*
   * Register device id for notification
@@ -150,7 +118,7 @@ public class AppController extends Application {
   /*
   * Post Created Distribution List
   * */
-  public void postCreateDistList(long g_id){
+  public void postCreateDistList(Activity activity,long g_id){
     id = g_id;
     ArrayList<DistListModule> distInfo = new ArrayList<DistListModule>();
     distInfo = DistListModule.getInstance().getDistLists(getApplicationContext(),id);
@@ -173,26 +141,21 @@ public class AppController extends Application {
       }
     }
 
-    VolleyStringRequest postRequest = new VolleyStringRequest(
+    HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
+    String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
+
+    APIHandler.getInstance(activity).restAPIRequest(
         Request.Method.POST,
-        Constants.postDistListUrl,
+        Constants.postDistListUrl+"?access_token="+access_token,
         getGroupParams(contacts,distListName),
-        distListRequestListener,
-        distListRequestErrorListener,
-        getApplicationContext()
+        null
     );
-    postRequest.setRetryPolicy(new DefaultRetryPolicy(
-        (int) TimeUnit.SECONDS.toMillis(30),
-        0,
-        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-    AppController.getInstance().addToRequestQueue(postRequest);
   }
 
   public Map<String,String> getGroupParams(JSONArray contacts,String distListName){
 
     Map<String, String> jsonParams = new HashMap<String, String>();
     jsonParams.put("name", distListName);
-    jsonParams.put("createdBy", "1");
     jsonParams.put("members", contacts.toString());
 
     return jsonParams;
@@ -200,9 +163,8 @@ public class AppController extends Application {
 
   Response.Listener<String> distListRequestListener = new Response.Listener<String>() {
     @Override
-    public void onResponse(String server_group_id) {
-      Log.i("dist list response",server_group_id);
-      DistListModule.getInstance().updateDistListStatus(getApplicationContext(), id,Long.parseLong(server_group_id));
+    public void onResponse(String response) {
+
     }
   };
 
@@ -214,10 +176,25 @@ public class AppController extends Application {
   };
 
   /*
+  * Post Delete Distribution List
+  * */
+  public void postDeleteDistList(Activity activity,long dist_id){
+    HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
+    String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
+
+    APIHandler.getInstance(activity).restAPIRequest(
+        Request.Method.DELETE,
+        Constants.postDistListUrl+"/"+dist_id+"?access_token="+access_token,
+        null,
+        null
+    );
+  }
+
+  /*
   * Post Created Property
   * */
 
-  public void postCreateProperty(long prop_id){
+  public void postCreateProperty(Activity activity,long prop_id){
     id = prop_id;
     ArrayList<PropertyModule> propertyList = new ArrayList<PropertyModule>();
     propertyList = PropertyModule.getInstance().getPropertyInfo(getApplicationContext(),id);
@@ -225,15 +202,15 @@ public class AppController extends Application {
     if(propertyList.size() != 0)
       propertyInfo = propertyList.get(0);
 
-    VolleyStringRequest postRequest = new VolleyStringRequest(
+    HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
+    String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
+
+    APIHandler.getInstance(activity).restAPIRequest(
         Request.Method.POST,
-        Constants.createPropertyUrl,
+        Constants.createPropertyUrl+"?access_token="+access_token,
         getPropertyParams(propertyInfo),
-        createPropertyRequestListener,
-        createPropertyRequestErrorListener,
-        getApplicationContext()
+        null
     );
-    AppController.getInstance().addToRequestQueue(postRequest);
   }
 
   public Map<String,String> getPropertyParams(PropertyModule propertyInfo){
@@ -252,63 +229,26 @@ public class AppController extends Application {
     return jsonParams;
   }
 
-
-
-  Response.Listener<String> createPropertyRequestListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String response) {
-      if(response != null){
-        String message = CommonFunctions.trimMessage(response, "message");
-        if(message != null)
-          Toast.makeText(getApplicationContext(), "" + message, Toast.LENGTH_SHORT).show();
-
-        String data = CommonFunctions.trimMessage(response, "data");
-        long property_id = 0;
-        if(data != null)
-          try {
-            Log.i("data",data);
-            JSONObject jsonObj = new JSONObject(data);
-            property_id = jsonObj.getLong(data);
-          } catch (JSONException e) {
-            e.printStackTrace();
-          }
-
-        PropertyModule.getInstance().updatePropertyStatus(getApplicationContext(),id,property_id);
-      }
-    }
-  };
-
-  Response.ErrorListener createPropertyRequestErrorListener = new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) {
-      if(error instanceof NoConnectionError)
-        Log.e("error response", "NoConnectionError");
-      else if(error.networkResponse != null){
-        Log.e("error code", "" + error.networkResponse.statusCode);
-      }
-    }
-  };
-
   /*
   * Post Created Requirement
   * */
 
-  public void postCreateRequirement(long id){
+  public void postCreateRequirement(Activity activity,long id){
     ArrayList<RequirementModule> requirementList = new ArrayList<RequirementModule>();
     requirementList = RequirementModule.getInstance().getRequirementInfo(getApplicationContext(), id);
     RequirementModule requirementInfo = null;
     if(requirementList.size() != 0)
       requirementInfo = requirementList.get(0);
 
-    VolleyStringRequest postRequest = new VolleyStringRequest(
+    HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
+    String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
+
+    APIHandler.getInstance(activity).restAPIRequest(
         Request.Method.POST,
-        Constants.createRequirementUrl,
+        Constants.createRequirementUrl+"?access_token="+access_token,
         getRequirementParams(requirementInfo),
-        createRequirementRequestListener,
-        createRequirementRequestErrorListener,
-        getApplicationContext()
+        null
     );
-    AppController.getInstance().addToRequestQueue(postRequest);
   }
 
   public Map<String,String> getRequirementParams(RequirementModule requirementInfo){
@@ -327,21 +267,13 @@ public class AppController extends Application {
     return jsonParams;
   }
 
+  @Override
+  public void OnRequestResponse(String response) {
 
+  }
 
-  Response.Listener<String> createRequirementRequestListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String req_id) {
-      Log.i("add requirement res",req_id);
-      RequirementModule.getInstance().updateRequirementStatus(getApplicationContext(),id,Long.parseLong(req_id));
-    }
-  };
+  @Override
+  public void OnRequestErrorResponse(VolleyError error) {
 
-  Response.ErrorListener createRequirementRequestErrorListener = new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) {
-      Log.e("Error Response",error.toString());
-    }
-  };
-
+  }
 }

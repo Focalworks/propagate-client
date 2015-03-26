@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +26,7 @@ import com.google.android.gms.plus.model.people.Person;
 import java.util.Arrays;
 
 import propagate.com.propagate_client.R;
+import propagate.com.propagate_client.distributionList.DistListingActivity;
 import propagate.com.propagate_client.gcm.GCMUtils;
 import propagate.com.propagate_client.gcm.RegisterDeviceTask;
 import propagate.com.propagate_client.volleyRequest.AppController;
@@ -59,11 +59,20 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
    */
   private boolean mIntentInProgress;
   private static final int RC_SIGN_IN = 0;
+  private LoginSessionManager loginSessionManager;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.login_selection);
+
+    loginSessionManager = new LoginSessionManager(this);
+
+    if(loginSessionManager.isUserLoggedIn()){
+      Intent intent = new Intent(this, DistListingActivity.class);
+      startActivity(intent);
+      finish();
+    }
 
     uiHelper = new UiLifecycleHelper(this, statusCallback);
     uiHelper.onCreate(savedInstanceState);

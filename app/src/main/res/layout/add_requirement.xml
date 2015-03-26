@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_requirement_title"
+        android:inputType="textAutoComplete"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addRequirementEtTitle"
         android:hint="@string/hint_requirement_description"
+        android:inputType="textAutoComplete"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -43,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addRequirementEtEmail"
         android:hint="@string/hint_requirement_location"
+        android:inputType="textAutoComplete"
         android:imeOptions="flagNavigateNext"/>
 
 
@@ -52,6 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addRequirementEtLocation"
         android:hint="@string/hint_requirement_area"
+        android:inputType="number"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -60,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addRequirementEtArea"
         android:hint="@string/hint_requirement_range"
+        android:inputType="number"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -68,6 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addRequirementEtRange"
         android:hint="@string/hint_requirement_price"
+        android:inputType="number"
         android:imeOptions="flagNavigateNext"/>
 
       <EditText
@@ -76,6 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addRequirementEtPrice"
         android:hint="@string/hint_requirement_price_range"
+        android:inputType="number"
         android:imeOptions="actionDone"/>
 
       <Spinner

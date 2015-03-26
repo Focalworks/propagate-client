@@ -33,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   public static final String KEY_created_by = "created_by";
   public static final String KEY_count = "count";
   public static final String KEY_server_dist_id = "server_dist_id";
+  public static final String KEY_pending_status = "pending_status";
 
   //Distribution Members Table Column names
   public static final String KEY_contact_id = "contact_id";
@@ -62,7 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   public void onCreate(SQLiteDatabase db) {
     String CREATE_DIST_DETAIL = "CREATE TABLE " + TABLE_DIST_DETAIL + "("
         + KEY_id + " INTEGER PRIMARY KEY,"+ KEY_dist_name + " TEXT,"+KEY_created_by+ " TEXT,"+KEY_created+ " TEXT,"
-        +KEY_count+" INTEGER,"+KEY_status+" INTEGER,"+KEY_server_dist_id+" TEXT)";
+        +KEY_count+" INTEGER,"+KEY_status+" INTEGER,"+KEY_pending_status+" INTEGER,"+KEY_server_dist_id+" TEXT)";
     db.execSQL(CREATE_DIST_DETAIL);
 
     String CREATE_DIST_MEMBERS = "CREATE TABLE " + TABLE_DIST_MEMBERS + "("

@@ -13,7 +13,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -263,13 +262,15 @@ public class CommonFunctions {
   }
 
   // validating email id
-  public static boolean isValidEmail(String email) {
-    String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+  public static boolean isValidEmail(String emailAddress) {
+    String pttn = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    Pattern p = Pattern.compile(pttn);
+    Matcher m = p.matcher(emailAddress);
 
-    Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-    Matcher matcher = pattern.matcher(email);
-    return matcher.matches();
+    if (m.matches()) {
+      return true;
+    }
+    return false;
   }
 
   public static String trimMessage(String json, String key){

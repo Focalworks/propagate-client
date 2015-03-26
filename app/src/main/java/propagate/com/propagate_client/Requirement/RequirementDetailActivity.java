@@ -8,10 +8,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import propagate.com.propagate_client.R;
-import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.database.RequirementModule;
-import propagate.com.propagate_client.property.AddPropertyActivity;
-import propagate.com.propagate_client.property.PropertyListingActivity;
 
 /**
  * Created by kaustubh on 24/3/15.

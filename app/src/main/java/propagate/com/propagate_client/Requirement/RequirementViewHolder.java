@@ -1,5 +1,6 @@
 package propagate.com.propagate_client.Requirement;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -12,13 +13,15 @@ public class RequirementViewHolder {
   private TextView txtArea;
   private TextView txtPrice;
   private TextView txtType;
+  private ImageView imgRetry;
 
-  public RequirementViewHolder(TextView txtTitle, TextView txtLocation, TextView txtArea, TextView txtPrice, TextView txtType) {
+  public RequirementViewHolder(TextView txtTitle, TextView txtLocation, TextView txtArea, TextView txtPrice, TextView txtType, ImageView imgRetry) {
     this.txtTitle = txtTitle;
     this.txtLocation = txtLocation;
     this.txtArea = txtArea;
     this.txtPrice = txtPrice;
     this.txtType = txtType;
+    this.imgRetry = imgRetry;
   }
 
   public TextView getTxtTitle() {
@@ -61,4 +64,11 @@ public class RequirementViewHolder {
     this.txtType = txtType;
   }
 
+  public ImageView getImgRetry() {
+    return imgRetry;
+  }
+
+  public void setImgRetry(ImageView imgRetry) {
+    this.imgRetry = imgRetry;
+  }
 }

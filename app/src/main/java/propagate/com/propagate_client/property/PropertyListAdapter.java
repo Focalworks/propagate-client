@@ -1,8 +1,6 @@
 package propagate.com.propagate_client.property;
 
 import android.app.Activity;
-import android.media.Image;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +13,8 @@ import java.util.ArrayList;
 
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.database.PropertyModule;
+import propagate.com.propagate_client.utils.CustomAdapterInterface;
+import propagate.com.propagate_client.volleyRequest.AppController;
 
 /**
  * Created by kaustubh on 19/3/15.
@@ -24,12 +24,14 @@ public class PropertyListAdapter extends ArrayAdapter<PropertyModule> {
   private ArrayList<PropertyModule> propertyArrayList;
   private Activity activity;
   private int property_row_view;
+  private CustomAdapterInterface customAdapterInterface;
 
   public PropertyListAdapter(Activity activity, int resource, ArrayList<PropertyModule> propertyArrayList) {
     super(activity, resource, propertyArrayList);
     this.activity = activity;
     this.property_row_view = resource;
     this.propertyArrayList = propertyArrayList;
+    customAdapterInterface = (CustomAdapterInterface) activity;
   }
 
   @Override
@@ -83,7 +85,9 @@ public class PropertyListAdapter extends ArrayAdapter<PropertyModule> {
         imgRetry.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            Toast.makeText(activity,"Retry",Toast.LENGTH_LONG).show();
+            long prop_id = propertyModule.getP_id();
+            customAdapterInterface.OnBtnClick(prop_id);
+            AppController.getInstance().postCreateProperty(activity,prop_id);
           }
         });
       }

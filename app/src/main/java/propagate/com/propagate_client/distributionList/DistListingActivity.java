@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,44 +15,44 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.Response;
+import com.android.volley.NoConnectionError;
 import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.Requirement.RequirementListingActivity;
+import propagate.com.propagate_client.authentication.LoginSessionManager;
 import propagate.com.propagate_client.database.DistListModule;
-import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.property.PropertyListingActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;
-import propagate.com.propagate_client.utils.Constants;
+import propagate.com.propagate_client.utils.CustomAdapterInterface;
+import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 import propagate.com.propagate_client.volleyRequest.AppController;
-import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
 
 /**
  * Created by kaustubh on 4/2/15.
  */
-public class DistListingActivity extends Activity {
+public class DistListingActivity extends Activity implements APIHandlerInterface,CustomAdapterInterface {
 
   ListView groupListView;
   ImageView imgAddGroup;
   DistListAdapter distListAdapter;
+  DistListModule listModule;
   final String[] groupItems = {
       "Group Info", "Delete Group"
   };
+  private long group_id;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_listing);
 
-//    OauthToken();
-//    getToken();
     imgAddGroup = (ImageView) findViewById(R.id.imgAddBtn);
     imgAddGroup.setVisibility(View.VISIBLE);
     imgAddGroup.setOnClickListener(new View.OnClickListener() {
@@ -105,11 +104,8 @@ public class DistListingActivity extends Activity {
         .setCancelable(false)
         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog,int id) {
-
-            DistListModule.getInstance().deleteDistList(getApplicationContext(),distListModule.getDist_id());
-
-            distListAdapter.remove(distListModule);
-            distListAdapter.notifyDataSetChanged();
+            listModule = distListModule;
+            AppController.getInstance().postDeleteDistList(DistListingActivity.this, distListModule.getServer_dist_id());
             dialog.dismiss();
           }
         })
@@ -155,54 +151,52 @@ public class DistListingActivity extends Activity {
     return false;
   }
 
-  private void OauthToken(){
-    VolleyStringRequest postRequest = new VolleyStringRequest(
-        Request.Method.POST,
-        "http://192.168.7.102/propaget/public/oauth/token",
-        getOauthParams(),
-        requestListener,
-        requestErrorListener,
-        getApplicationContext()
-    );
-    AppController.getInstance().addToRequestQueue(postRequest);
+  @Override
+  public void OnRequestResponse(String response) {
+    if(response != null){
+      String message = CommonFunctions.trimMessage(response, "message");
+      Log.i("message", message);
+      if(message != null)
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+      String data = CommonFunctions.trimMessage(response, "data");
+      if(data != null)
+        try {
+          Log.i("data",data);
+          JSONObject jsonObj = new JSONObject(data);
+          String type = jsonObj.getString("type");
+          switch (type){
+            case "save":
+              JSONObject list = new JSONObject(jsonObj.getString("list"));
+              long server_group_id = list.getLong("id");
+              DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id,server_group_id);
+              ArrayList<DistListModule> distArrayList = DistListModule.getInstance().getDistLists(this, 0);
+              distListAdapter = new DistListAdapter(this, R.layout.custom_dist_view,distArrayList);
+              distListAdapter.notifyDataSetChanged();
+              break;
+            case "delete":
+              DistListModule.getInstance().deleteDistList(getApplicationContext(),listModule.getDist_id());
+              distListAdapter.remove(listModule);
+              distListAdapter.notifyDataSetChanged();
+              break;
+          }
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+    }
   }
 
-  public Map<String,String> getOauthParams(){
-
-    Map<String, String> jsonParams = new HashMap<String, String>();
-    jsonParams.put("username", "amitav.roy@focalworks.in");
-    jsonParams.put("password", "password");
-    jsonParams.put("client_id", "testclient");
-    jsonParams.put("client_secret", "testpass");
-    jsonParams.put("grant_type", "password");
-//    b587d71a30e4c010eee38d014e2f12a8d6b54088
-    return jsonParams;
+  @Override
+  public void OnRequestErrorResponse(VolleyError error) {
+    if(error instanceof NoConnectionError)
+      Log.e("error response", "NoConnectionError");
+    else if(error.networkResponse != null){
+      Log.e("error code", "" + error.networkResponse.statusCode);
+    }
   }
 
-  Response.Listener<String> requestListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String response) {
-      Log.i("Reponse",response);
-    }
-  };
-
-  Response.ErrorListener requestErrorListener = new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) {
-      Log.i("Error Reponse",error.toString());
-    }
-  };
-
-
-  private void getToken(){
-    VolleyStringRequest postRequest = new VolleyStringRequest(
-        Request.Method.GET,
-        "http://192.168.7.102/propaget/public/dist-list?access_token=1f90e4fc073953cda7c2edaee759807af1d74fecc",
-        null,
-        requestListener,
-        requestErrorListener,
-        getApplicationContext()
-    );
-    AppController.getInstance().addToRequestQueue(postRequest);
+  @Override
+  public void OnBtnClick(long id) {
+    group_id = id;
   }
 }

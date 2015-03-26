@@ -1,15 +1,19 @@
 package propagate.com.propagate_client.Requirement;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import propagate.com.propagate_client.R;
+import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.database.RequirementModule;
 
 /**
@@ -43,6 +47,7 @@ public class RequirementListAdapter extends ArrayAdapter<RequirementModule> {
     TextView txtArea;
     TextView txtPrice;
     TextView txtType;
+    ImageView imgRetry;
 
     if(convertView == null){
       LayoutInflater layoutInflater = activity.getLayoutInflater();
@@ -53,8 +58,9 @@ public class RequirementListAdapter extends ArrayAdapter<RequirementModule> {
       txtArea = (TextView) convertView.findViewById(R.id.property_listing_area);
       txtPrice = (TextView) convertView.findViewById(R.id.property_listing_price);
       txtType = (TextView) convertView.findViewById(R.id.property_listing_type);
+      imgRetry = (ImageView) convertView.findViewById(R.id.property_listing_retry);
 
-      convertView.setTag(new RequirementViewHolder(txtTitle,txtLocation,txtArea,txtPrice,txtType));
+      convertView.setTag(new RequirementViewHolder(txtTitle,txtLocation,txtArea,txtPrice,txtType,imgRetry));
     }else{
       RequirementViewHolder requirementViewHolder = (RequirementViewHolder) convertView.getTag();
       txtTitle = requirementViewHolder.getTxtTitle();
@@ -62,16 +68,38 @@ public class RequirementListAdapter extends ArrayAdapter<RequirementModule> {
       txtArea = requirementViewHolder.getTxtArea();
       txtPrice = requirementViewHolder.getTxtPrice();
       txtType = requirementViewHolder.getTxtType();
+      imgRetry = requirementViewHolder.getImgRetry();
     }
 
-    if(requestArrayList.get(position) != null){
-      txtTitle.setText(requestArrayList.get(position).getTitle());
-      txtLocation.setText(requestArrayList.get(position).getLocation());
-      txtArea.setText(requestArrayList.get(position).getArea());
-      txtPrice.setText(requestArrayList.get(position).getPrice());
-      txtType.setText(requestArrayList.get(position).getType());
+    if(requirementModule != null){
+      txtTitle.setText(requirementModule.getTitle());
+      txtLocation.setText(requirementModule.getLocation());
+      txtArea.setText(requirementModule.getArea());
+      txtPrice.setText(requirementModule.getPrice());
+      txtType.setText(requirementModule.getType());
+
+      Log.e("status",requirementModule.getStatus()+"");
+      if(requirementModule.getStatus() == 0){
+        imgRetry.setVisibility(View.VISIBLE);
+        imgRetry.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            Toast.makeText(activity, "Retry", Toast.LENGTH_LONG).show();
+          }
+        });
+      }
     }
 
     return convertView;
+  }
+
+  @Override
+  public boolean isEnabled(int position) {
+    final RequirementModule requirementModule = (RequirementModule) this.getItem(position);
+    if(requirementModule.getStatus() == 0)
+    {
+      return false;
+    }
+    return super.isEnabled(position);
   }
 }

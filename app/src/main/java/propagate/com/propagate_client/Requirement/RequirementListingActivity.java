@@ -5,7 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,23 +13,33 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.android.volley.NoConnectionError;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import propagate.com.propagate_client.R;
-import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.database.RequirementModule;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
 import propagate.com.propagate_client.property.PropertyListingActivity;
+import propagate.com.propagate_client.utils.CommonFunctions;
+import propagate.com.propagate_client.utils.CustomAdapterInterface;
+import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 
 /**
  * Created by kaustubh on 19/3/15.
  */
-public class RequirementListingActivity extends Activity {
+public class RequirementListingActivity extends Activity implements APIHandlerInterface,CustomAdapterInterface {
 
   ListView requirementListView;
   ImageView imgAddReq;
   RequirementListAdapter requirementListAdapter;
+  private long requirement_id;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +94,13 @@ public class RequirementListingActivity extends Activity {
 
   private void showRemovePopup(final RequirementModule requirementModule){
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
     // set dialog message
     alertDialogBuilder
         .setMessage("Remove requirement "+requirementModule.getTitle())
         .setCancelable(false)
         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog,int id) {
+
             RequirementModule.getInstance().deleteProperty(getApplicationContext(),requirementModule.getR_id());
             requirementListAdapter.remove(requirementModule);
             requirementListAdapter.notifyDataSetChanged();
@@ -139,4 +149,51 @@ public class RequirementListingActivity extends Activity {
     return false;
   }
 
+  @Override
+  public void OnRequestResponse(String response) {
+    if(response != null){
+      String message = CommonFunctions.trimMessage(response, "message");
+      Log.i("message", message);
+      if(message != null)
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+      String data = CommonFunctions.trimMessage(response, "data");
+      if(data != null)
+        try {
+          Log.i("data",data);
+          JSONObject jsonObj = new JSONObject(data);
+          String type = jsonObj.getString("type");
+          switch (type){
+            case "save":
+              JSONObject list = new JSONObject(jsonObj.getString("req"));
+              long server_req_id = list.getLong("id");
+              RequirementModule.getInstance().updateRequirementStatus(getApplicationContext(), requirement_id, server_req_id);
+              ArrayList<RequirementModule> requirementList = RequirementModule.getInstance().getRequirementInfo(this, 0);
+              requirementListAdapter = new RequirementListAdapter(this, R.layout.custom_property_view,requirementList);
+              requirementListView.setAdapter(requirementListAdapter);
+
+              break;
+            case "delete":
+              break;
+          }
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+    }
+
+  }
+
+  @Override
+  public void OnRequestErrorResponse(VolleyError error) {
+    if(error instanceof NoConnectionError)
+      Log.e("error response", "NoConnectionError");
+    else if(error.networkResponse != null){
+      Log.e("error code", "" + error.networkResponse.statusCode);
+    }
+  }
+
+  @Override
+  public void OnBtnClick(long id) {
+    requirement_id = id;
+  }
 }

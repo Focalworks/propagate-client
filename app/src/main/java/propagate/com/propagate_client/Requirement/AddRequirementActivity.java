@@ -3,25 +3,35 @@ package propagate.com.propagate_client.Requirement;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.android.volley.NoConnectionError;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
 
 import propagate.com.propagate_client.R;
-import propagate.com.propagate_client.database.PropertyModule;
+import propagate.com.propagate_client.contact.Contact;
+import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.database.RequirementModule;
-import propagate.com.propagate_client.property.PropertyListingActivity;
+import propagate.com.propagate_client.utils.CommonFunctions;
+import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 import propagate.com.propagate_client.volleyRequest.AppController;
 
 /**
  * Created by kaustubh on 18/3/15.
  */
-public class AddRequirementActivity extends Activity {
+public class AddRequirementActivity extends Activity implements APIHandlerInterface{
 
   EditText etTitle,etDescription,etEmail,etLocation,etArea,etRange,etPrice,etPriceRange;
   Spinner spType;
@@ -71,18 +81,19 @@ public class AddRequirementActivity extends Activity {
     btnSubmit.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if(btnSubmit.getText().equals("Submit")) {
-          long id = RequirementModule.getInstance().addRequirement(getApplicationContext(), new RequirementModule(etTitle.getText().toString(),
-              etDescription.getText().toString(), etEmail.getText().toString(), etLocation.getText().toString(), etArea.getText().toString(),
-              etRange.getText().toString(), etPrice.getText().toString(), etPriceRange.getText().toString(), spType.getSelectedItem().toString()));
+        if (checkValidation()) {
+          if (btnSubmit.getText().equals("Submit")) {
+            requirement_id = RequirementModule.getInstance().addRequirement(getApplicationContext(), new RequirementModule(etTitle.getText().toString(),
+                etDescription.getText().toString(), etEmail.getText().toString(), etLocation.getText().toString(), etArea.getText().toString(),
+                etRange.getText().toString(), etPrice.getText().toString(), etPriceRange.getText().toString(), spType.getSelectedItem().toString()));
 
-          AppController.getInstance().postCreateRequirement(id);
-        }else{
-          RequirementModule.getInstance().updateRequirement(getApplicationContext(),new RequirementModule(requirement_id,etTitle.getText().toString(),
-              etDescription.getText().toString(), etEmail.getText().toString(), etLocation.getText().toString(), etArea.getText().toString(),
-              etRange.getText().toString(), etPrice.getText().toString(), etPriceRange.getText().toString(), spType.getSelectedItem().toString()));
+            AppController.getInstance().postCreateRequirement(AddRequirementActivity.this,requirement_id);
+          } else {
+            RequirementModule.getInstance().updateRequirement(getApplicationContext(), new RequirementModule(requirement_id, etTitle.getText().toString(),
+                etDescription.getText().toString(), etEmail.getText().toString(), etLocation.getText().toString(), etArea.getText().toString(),
+                etRange.getText().toString(), etPrice.getText().toString(), etPriceRange.getText().toString(), spType.getSelectedItem().toString()));
+          }
         }
-        loadRequirementListingActivity();
       }
     });
   }
@@ -93,9 +104,89 @@ public class AddRequirementActivity extends Activity {
     finish();
   }
 
+  private boolean checkValidation(){
+    boolean val = true;
+    if(TextUtils.isEmpty(etTitle.getText().toString())){
+      etTitle.setError("Field can not be blank.");
+      val=false;
+    }
+    if(TextUtils.isEmpty(etDescription.getText().toString())){
+      etDescription.setError("Field can not be blank.");
+      val=false;
+    }
+    if(TextUtils.isEmpty(etEmail.getText().toString())){
+      etEmail.setError("Field can not be blank.");
+      val=false;
+    }else if (CommonFunctions.isValidEmail(etEmail.getText().toString())){
+      etEmail.setError("Enter valid Email Id.");
+      val = false;
+    }
+    if(TextUtils.isEmpty(etLocation.getText().toString())){
+      etLocation.setError("Field can not be blank.");
+      val=false;
+    }
+    if(TextUtils.isEmpty(etArea.getText().toString())){
+      etArea.setError("Field can not be blank.");
+      val=false;
+    }
+    if(TextUtils.isEmpty(etRange.getText().toString())){
+      etRange.setError("Field can not be blank.");
+      val=false;
+    }
+    if(TextUtils.isEmpty(etPrice.getText().toString())){
+      etPrice.setError("Field can not be blank.");
+      val=false;
+    }
+    if(TextUtils.isEmpty(etPriceRange.getText().toString())){
+      etPriceRange.setError("Field can not be blank.");
+      val=false;
+    }
+
+    return val;
+  }
+
   @Override
   public void onBackPressed() {
     super.onBackPressed();
     loadRequirementListingActivity();
+  }
+
+  @Override
+  public void OnRequestResponse(String response) {
+    if(response != null){
+      String message = CommonFunctions.trimMessage(response, "message");
+      Log.i("message", message);
+      if(message != null)
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+      String data = CommonFunctions.trimMessage(response, "data");
+      if(data != null)
+        try {
+          Log.i("data",data);
+          JSONObject jsonObj = new JSONObject(data);
+          String type = jsonObj.getString("type");
+          switch (type){
+            case "save":
+              JSONObject list = new JSONObject(jsonObj.getString("req"));
+              long server_req_id = list.getLong("id");
+              RequirementModule.getInstance().updateRequirementStatus(getApplicationContext(),requirement_id,server_req_id);
+              loadRequirementListingActivity();
+              break;
+            case "delete":
+              break;
+          }
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+    }
+  }
+
+  @Override
+  public void OnRequestErrorResponse(VolleyError error) {
+    if(error instanceof NoConnectionError)
+      Log.e("error response", "NoConnectionError");
+    else if(error.networkResponse != null){
+      Log.e("error code", "" + error.networkResponse.statusCode);
+    }
   }
 }

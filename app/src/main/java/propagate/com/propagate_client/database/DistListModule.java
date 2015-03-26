@@ -21,10 +21,12 @@ public class DistListModule implements Serializable {
   private static DistListModule mInstance;
 
   private long dist_id;
+  private long server_dist_id;
   private String dist_name;
   private String created_by;
   private int count;
   private String status;
+  private String pending_status;
   private String created;
 
   private long member_id;
@@ -67,13 +69,22 @@ public class DistListModule implements Serializable {
   }
 
   /*dist list*/
-  public DistListModule(long dist_id, String dist_name, String createdBy,int count, String created_timestamp, String status) {
+  public DistListModule(long server_dist_id,long dist_id, String dist_name, String createdBy,int count, String created_timestamp, String status) {
+    this.server_dist_id = server_dist_id;
     this.dist_id = dist_id;
     this.dist_name = dist_name;
     this.created_by = createdBy;
     this.count = count;
     this.created = created_timestamp;
     this.status = status;
+  }
+
+  public long getServer_dist_id() {
+    return server_dist_id;
+  }
+
+  public void setServer_dist_id(long server_dist_id) {
+    this.server_dist_id = server_dist_id;
   }
 
   public long getMember_id() {
@@ -156,6 +167,14 @@ public class DistListModule implements Serializable {
     this.created = created;
   }
 
+  public String getPending_status() {
+    return pending_status;
+  }
+
+  public void setPending_status(String pending_status) {
+    this.pending_status = pending_status;
+  }
+
   public long addDistList(Context context, DistListModule distListModule){
     DatabaseHelper databaseHelper = new DatabaseHelper(context);
     db = databaseHelper.open();
@@ -166,6 +185,7 @@ public class DistListModule implements Serializable {
     contentValues.put(databaseHelper.KEY_count, distListModule.getCount());
     contentValues.put(databaseHelper.KEY_created, CommonFunctions.getCreatedDate());
     contentValues.put(databaseHelper.KEY_status, 0);
+    contentValues.put(databaseHelper.KEY_pending_status, 0);
 
     long lastId = db.insert(databaseHelper.TABLE_DIST_DETAIL,null,contentValues);
     databaseHelper.close();
@@ -200,10 +220,12 @@ public class DistListModule implements Serializable {
       cursor = db.rawQuery("select * from " + databaseHelper.TABLE_DIST_DETAIL + " ORDER BY " + databaseHelper.KEY_created + " DESC", null);
     }else {
       cursor = db.query(databaseHelper.TABLE_DIST_DETAIL, new String[]{databaseHelper.KEY_id,databaseHelper.KEY_dist_name,
-              databaseHelper.KEY_created_by, databaseHelper.KEY_count, databaseHelper.KEY_created, databaseHelper.KEY_status}, databaseHelper.KEY_id + "=?",
+              databaseHelper.KEY_created_by, databaseHelper.KEY_count, databaseHelper.KEY_created, databaseHelper.KEY_status,
+              databaseHelper.KEY_pending_status,databaseHelper.KEY_server_dist_id}, databaseHelper.KEY_id + "=?",
           new String[]{String.valueOf(groupId)}, null, null, null, null);
     }
 
+    int serverIdIndex = cursor.getColumnIndex(databaseHelper.KEY_server_dist_id);
     int idIndex = cursor.getColumnIndex(databaseHelper.KEY_id);
     int nameIndex = cursor.getColumnIndex(databaseHelper.KEY_dist_name);
     int createdByIndex = cursor.getColumnIndex(databaseHelper.KEY_created_by);
@@ -213,13 +235,14 @@ public class DistListModule implements Serializable {
     if (cursor .moveToFirst()) {
       while (cursor.isAfterLast() == false) {
         long id = cursor.getLong(idIndex);
+        long server_id = cursor.getLong(serverIdIndex);
         String name = cursor.getString(nameIndex);
         String createdBy = cursor.getString(createdByIndex);
         int count = cursor.getInt(countIndex);
         String created_timestamp = cursor.getString(createdIndex);
         String status = cursor.getString(statusIndex);
 
-        distList.add(new DistListModule(id,name,createdBy,count,created_timestamp,status));
+        distList.add(new DistListModule(server_id,id,name,createdBy,count,created_timestamp,status));
         cursor.moveToNext();
       }
     }
@@ -268,6 +291,18 @@ public class DistListModule implements Serializable {
     ContentValues values = new ContentValues();
     values.put(databaseHelper.KEY_server_dist_id, server_dist_id);
     values.put(databaseHelper.KEY_status, 1);
+    db.update(databaseHelper.TABLE_DIST_DETAIL, values, databaseHelper.KEY_id+"="+dist_id, null);
+    databaseHelper.close();
+    Log.i("Database", "Updated Dist List Status");
+  }
+
+  /*Update distribution list pending status*/
+  public void updateDistListPendingStatus(Context context,long dist_id){
+    DatabaseHelper databaseHelper = new DatabaseHelper(context);
+    db = databaseHelper.open();
+
+    ContentValues values = new ContentValues();
+    values.put(databaseHelper.KEY_pending_status, 1);
     db.update(databaseHelper.TABLE_DIST_DETAIL, values, databaseHelper.KEY_id+"="+dist_id, null);
     databaseHelper.close();
     Log.i("Database", "Updated Dist List Status");

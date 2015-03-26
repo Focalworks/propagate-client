@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,13 +16,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -33,17 +29,20 @@ import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
+import propagate.com.propagate_client.utils.CustomAdapterInterface;
+import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 import propagate.com.propagate_client.volleyRequest.AppController;
 import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
 
 /**
  * Created by kaustubh on 19/3/15.
  */
-public class PropertyListingActivity extends Activity {
+public class PropertyListingActivity extends Activity implements APIHandlerInterface,CustomAdapterInterface{
 
   ListView propertyListView;
   ImageView imgAddProperty;
   PropertyListAdapter propertyListAdapter;
+  long property_id;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -196,4 +195,22 @@ public class PropertyListingActivity extends Activity {
     return false;
   }
 
+  @Override
+  public void OnRequestResponse(String response) {
+
+  }
+
+  @Override
+  public void OnRequestErrorResponse(VolleyError error) {
+    if(error instanceof NoConnectionError)
+      Log.e("error response", "NoConnectionError");
+    else if(error.networkResponse != null){
+      Log.e("error code", "" + error.networkResponse.statusCode);
+    }
+  }
+
+  @Override
+  public void OnBtnClick(long id) {
+    property_id = id;
+  }
 }

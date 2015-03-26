@@ -2,7 +2,10 @@ package propagate.com.propagate_client.distributionList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,20 +14,34 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.android.volley.NoConnectionError;
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import propagate.com.propagate_client.R;
+import propagate.com.propagate_client.authentication.LoginSessionManager;
 import propagate.com.propagate_client.contact.AddContactsActivity;
 import propagate.com.propagate_client.contact.Contact;
 import propagate.com.propagate_client.contact.ContactAdapter;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.utils.CommonFunctions;
+import propagate.com.propagate_client.utils.Constants;
+import propagate.com.propagate_client.volleyRequest.APIHandler;
+import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 import propagate.com.propagate_client.volleyRequest.AppController;
 
-public class CreateDistListActivity extends Activity implements ContactAdapter.GroupInterface{
+public class CreateDistListActivity extends Activity implements ContactAdapter.GroupInterface,APIHandlerInterface{
 
   ImageView btnAddMember;
   EditText etGroupName;
@@ -35,12 +52,18 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
   ArrayList<Contact> contactArrayList,selectedContactArrayList;
   ContactAdapter contactAdapter,selectedContactAdapter;
   Boolean selectAll = false;
+  private long group_id;
+  private LoginSessionManager loginSessionManager;
+  private String isoCode;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.create_dist_list);
 
+    isoCode = CommonFunctions.getIsoCode(getApplicationContext());
+
+    loginSessionManager = new LoginSessionManager(this);
     contactArrayList = new ArrayList<Contact>();
     selectedContactArrayList = new ArrayList<Contact>();
     contactList = new ArrayList<HashMap<String, String>>();
@@ -132,15 +155,27 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()){
       case R.id.menu_done:
-        long group_id = DistListModule.getInstance().addDistList(getApplicationContext(),new DistListModule(etGroupName.getText().toString(),"1",selectedContactArrayList.size()));
-        for(Contact contact : selectedContactArrayList) {
-          DistListModule.getInstance().addDistListMembers(getApplicationContext(), new DistListModule(group_id,contact.getName(),Long.toString(contact.getContact_id()),contact.getProfile_pic()));
+        if (checkValidation()) {
+          group_id = DistListModule.getInstance().addDistList(getApplicationContext(), new DistListModule(etGroupName.getText().toString(), "1", selectedContactArrayList.size()));
+          for (Contact contact : selectedContactArrayList) {
+            DistListModule.getInstance().addDistListMembers(getApplicationContext(), new DistListModule(group_id, contact.getName(), Long.toString(contact.getContact_id()), contact.getProfile_pic()));
+          }
+          new postCreateTask().execute();
         }
-        AppController.getInstance().postCreateDistList(group_id);
-        loadGroupListing();
         break;
     }
     return false;
+  }
+
+  private boolean checkValidation(){
+    if(TextUtils.isEmpty(etGroupName.getText().toString())){
+      etGroupName.setError("Field can not be blank.");
+      return false;
+    }else if(selectedContactArrayList.size() == 0){
+      Toast.makeText(getApplicationContext(),"Select at least one Member",Toast.LENGTH_LONG).show();
+      return false;
+    }
+    return true;
   }
 
   private void loadGroupListing(){
@@ -174,4 +209,52 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
     etAddMember.setAdapter(contactAdapter);
   }
 
+  @Override
+  public void OnRequestResponse(String response) {
+    if(response != null){
+      String message = CommonFunctions.trimMessage(response, "message");
+      Log.i("message", message);
+      if(message != null)
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+      String data = CommonFunctions.trimMessage(response, "data");
+      if(data != null)
+        try {
+          Log.i("data",data);
+          JSONObject jsonObj = new JSONObject(data);
+          String type = jsonObj.getString("type");
+          switch (type){
+            case "save":
+              JSONObject list = new JSONObject(jsonObj.getString("list"));
+              long server_group_id = list.getLong("id");
+              DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id,server_group_id);
+              loadGroupListing();
+              break;
+            case "delete":
+
+              break;
+          }
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+    }
+  }
+
+  @Override
+  public void OnRequestErrorResponse(VolleyError error) {
+    if(error instanceof NoConnectionError)
+      Log.e("error response", "NoConnectionError");
+    else if(error.networkResponse != null){
+      Log.e("error code", "" + error.networkResponse.statusCode);
+    }
+  }
+
+  private class postCreateTask extends AsyncTask<Void,Void,Void>{
+
+    @Override
+    protected Void doInBackground(Void... params) {
+      AppController.getInstance().postCreateDistList(CreateDistListActivity.this,group_id);
+      return null;
+    }
+  }
 }
