@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import propagate.com.propagate_client.authentication.LoginSessionManager;
 import propagate.com.propagate_client.database.RequirementModule;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
@@ -27,6 +28,7 @@ public class APIHandler{
   private static Context context;
   private static int appVersion;
   private APIHandlerInterface apiHandlerInterface;
+  private static LoginSessionManager loginSessionManager;
 
   public static APIHandler getInstance(Context context){
     if(mInstance == null)
@@ -34,19 +36,23 @@ public class APIHandler{
       mInstance = new APIHandler();
     }
     mInstance.context = context;
+    loginSessionManager = new LoginSessionManager(context);
     mInstance.apiHandlerInterface = (APIHandlerInterface)context;
     appVersion = CommonFunctions.getVersion(context);
     return mInstance;
   }
 
   public void restAPIRequest(int method,String url,Map<String, String> params,HashMap<String,String> headers){
+    HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
+    String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
+
     HashMap<String,String> headerParams = headers();
     if(headers != null)
       headerParams.putAll(headers);
 
     VolleyStringRequest postRequest = new VolleyStringRequest(
         method,
-        url,
+        url+"?access_token="+access_token,
         params,
         requestListener,
         requestErrorListener,

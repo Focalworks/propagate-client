@@ -98,11 +98,11 @@ public class PropertyListAdapter extends ArrayAdapter<PropertyModule> {
 
   @Override
   public boolean isEnabled(int position) {
-    final PropertyModule propertyModule = (PropertyModule) this.getItem(position);
+    /*final PropertyModule propertyModule = (PropertyModule) this.getItem(position);
     if(propertyModule.getStatus() == 0)
     {
       return false;
-    }
+    }*/
     return super.isEnabled(position);
   }
 }

@@ -189,9 +189,9 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
   @Override
   public void OnRequestErrorResponse(VolleyError error) {
     if(error instanceof NoConnectionError)
-      Log.e("error response", "NoConnectionError");
+      Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
     else if(error.networkResponse != null){
-      Log.e("error code", "" + error.networkResponse.statusCode);
+      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
     }
   }
 

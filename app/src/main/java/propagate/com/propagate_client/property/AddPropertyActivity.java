@@ -149,7 +149,6 @@ public class AddPropertyActivity extends Activity implements APIHandlerInterface
         Toast.makeText(getApplicationContext(), "" + message, Toast.LENGTH_SHORT).show();
 
       String data = CommonFunctions.trimMessage(response, "data");
-      long property_id = 0;
       if(data != null)
         try {
           Log.i("data",data);
@@ -174,11 +173,9 @@ public class AddPropertyActivity extends Activity implements APIHandlerInterface
   @Override
   public void OnRequestErrorResponse(VolleyError error) {
     if(error instanceof NoConnectionError)
-      Log.e("error response", "NoConnectionError");
+      Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
     else if(error.networkResponse != null){
-      String json = new String(error.networkResponse.data);
-      json = CommonFunctions.trimMessage(json, "message");
-      Log.e("error code", "" + json);
+      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
     }
   }
 }

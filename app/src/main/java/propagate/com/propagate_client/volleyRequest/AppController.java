@@ -43,7 +43,7 @@ public class AppController extends Application implements APIHandlerInterface{
   public void onCreate() {
     super.onCreate();
     mInstance = this;
-    loginSessionManager = new LoginSessionManager(this);
+
     isoCode = CommonFunctions.getIsoCode(getApplicationContext());
   }
 
@@ -141,12 +141,9 @@ public class AppController extends Application implements APIHandlerInterface{
       }
     }
 
-    HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
-    String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
-
     APIHandler.getInstance(activity).restAPIRequest(
         Request.Method.POST,
-        Constants.postDistListUrl+"?access_token="+access_token,
+        Constants.postDistListUrl,
         getGroupParams(contacts,distListName),
         null
     );
@@ -161,30 +158,14 @@ public class AppController extends Application implements APIHandlerInterface{
     return jsonParams;
   }
 
-  Response.Listener<String> distListRequestListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String response) {
-
-    }
-  };
-
-  Response.ErrorListener distListRequestErrorListener = new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) {
-      Log.e("Error Response",error.toString());
-    }
-  };
-
   /*
   * Post Delete Distribution List
   * */
   public void postDeleteDistList(Activity activity,long dist_id){
-    HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
-    String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
 
     APIHandler.getInstance(activity).restAPIRequest(
         Request.Method.DELETE,
-        Constants.postDistListUrl+"/"+dist_id+"?access_token="+access_token,
+        Constants.postDistListUrl+"/"+dist_id,
         null,
         null
     );
@@ -202,12 +183,9 @@ public class AppController extends Application implements APIHandlerInterface{
     if(propertyList.size() != 0)
       propertyInfo = propertyList.get(0);
 
-    HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
-    String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
-
     APIHandler.getInstance(activity).restAPIRequest(
         Request.Method.POST,
-        Constants.createPropertyUrl+"?access_token="+access_token,
+        Constants.postPropertyUrl,
         getPropertyParams(propertyInfo),
         null
     );
@@ -240,12 +218,9 @@ public class AppController extends Application implements APIHandlerInterface{
     if(requirementList.size() != 0)
       requirementInfo = requirementList.get(0);
 
-    HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
-    String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
-
     APIHandler.getInstance(activity).restAPIRequest(
         Request.Method.POST,
-        Constants.createRequirementUrl+"?access_token="+access_token,
+        Constants.postRequirementUrl,
         getRequirementParams(requirementInfo),
         null
     );

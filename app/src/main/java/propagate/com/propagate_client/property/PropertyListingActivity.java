@@ -21,15 +21,21 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import propagate.com.propagate_client.R;
+import propagate.com.propagate_client.Requirement.RequirementListAdapter;
 import propagate.com.propagate_client.Requirement.RequirementListingActivity;
 import propagate.com.propagate_client.database.PropertyModule;
+import propagate.com.propagate_client.database.RequirementModule;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.utils.CustomAdapterInterface;
+import propagate.com.propagate_client.volleyRequest.APIHandler;
 import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 import propagate.com.propagate_client.volleyRequest.AppController;
 import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
@@ -43,6 +49,7 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
   ImageView imgAddProperty;
   PropertyListAdapter propertyListAdapter;
   long property_id;
+  PropertyModule propertyModule;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +95,6 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
       }
     });
 
-//    testErrorMessage();
   }
 
   private void loadAddPropertyActivity(){
@@ -97,59 +103,26 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
     finish();
   }
 
-  private void testErrorMessage(){
-    VolleyStringRequest postRequest = new VolleyStringRequest(
-        Request.Method.GET,
-        Constants.test,
+  private void deleteProperty(long prop_id){
+    APIHandler.getInstance(PropertyListingActivity.this).restAPIRequest(
+        Request.Method.DELETE,
+        Constants.postPropertyUrl+"/"+prop_id,
         null,
-        requestListener,
-        requestErrorListener,
-        getApplicationContext()
+        null
     );
-    AppController.getInstance().addToRequestQueue(postRequest);
   }
-
-  Response.Listener<String> requestListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String response) {
-    }
-  };
-
-  Response.ErrorListener requestErrorListener = new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) {
-      String json = null;
-      NetworkResponse response = error.networkResponse;
-      if(response != null && response.data != null){
-        switch(response.statusCode){
-          case 422:
-            json = new String(response.data);
-            json = CommonFunctions.trimMessage(json, "message");
-            if(json != null) Toast.makeText(getApplicationContext(),""+json,Toast.LENGTH_SHORT).show();
-            break;
-
-          case 500:
-            json = new String(response.data);
-            json = CommonFunctions.trimMessage(json, "message");
-            if(json != null) Toast.makeText(getApplicationContext(),""+json,Toast.LENGTH_SHORT).show();
-            break;
-        }
-      }
-    }
-  };
 
   private void showRemovePopup(final PropertyModule propertyModule){
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
+    this.propertyModule = propertyModule;
     // set dialog message
     alertDialogBuilder
-        .setMessage("Remove property "+propertyModule.getTitle())
+        .setMessage("Remove property "+propertyModule.getTitle()+" "+propertyModule.getServer_prop_id())
         .setCancelable(false)
         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog,int id) {
-            PropertyModule.getInstance().deleteProperty(getApplicationContext(),propertyModule.getP_id());
-            propertyListAdapter.remove(propertyModule);
-            propertyListAdapter.notifyDataSetChanged();
+            property_id = propertyModule.getP_id();
+            deleteProperty(propertyModule.getServer_prop_id());
             dialog.dismiss();
           }
         })
@@ -197,15 +170,46 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
 
   @Override
   public void OnRequestResponse(String response) {
+    if(response != null){
+      String message = CommonFunctions.trimMessage(response, "message");
+      Log.i("message", message);
+      if(message != null)
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
+      String data = CommonFunctions.trimMessage(response, "data");
+      if(data != null)
+        try {
+          Log.i("data",data);
+          JSONObject jsonObj = new JSONObject(data);
+          String type = jsonObj.getString("type");
+          switch (type){
+            case "save":
+              JSONObject list = new JSONObject(jsonObj.getString("prop"));
+              long server_prop_id = list.getLong("id");
+              PropertyModule.getInstance().updatePropertyStatus(getApplicationContext(), property_id, server_prop_id);
+              ArrayList<PropertyModule> propertyList = PropertyModule.getInstance().getPropertyInfo(this, 0);
+              propertyListAdapter = new PropertyListAdapter(this, R.layout.custom_property_view,propertyList);
+              propertyListAdapter.notifyDataSetChanged();
+
+              break;
+            case "delete":
+              PropertyModule.getInstance().deleteProperty(getApplicationContext(),property_id);
+              propertyListAdapter.remove(propertyModule);
+              propertyListAdapter.notifyDataSetChanged();
+              break;
+          }
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+    }
   }
 
   @Override
   public void OnRequestErrorResponse(VolleyError error) {
     if(error instanceof NoConnectionError)
-      Log.e("error response", "NoConnectionError");
+      Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
     else if(error.networkResponse != null){
-      Log.e("error code", "" + error.networkResponse.statusCode);
+      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
     }
   }
 

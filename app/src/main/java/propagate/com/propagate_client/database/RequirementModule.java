@@ -20,6 +20,7 @@ public class RequirementModule implements Serializable{
   private ContentValues contentValues;
 
   private long r_id;
+  private long server_req_id;
   private String title;
   private String description;
   private String client_email;
@@ -69,8 +70,9 @@ public class RequirementModule implements Serializable{
     this.type = type;
    }
 
-  public RequirementModule(long r_id, String title, String description, String client_email, String location, String area, String range, String price, String price_range, String type, String created, int status) {
+  public RequirementModule(long r_id,long server_req_id, String title, String description, String client_email, String location, String area, String range, String price, String price_range, String type, String created, int status) {
     this.r_id = r_id;
+    this.server_req_id = server_req_id;
     this.title = title;
     this.description = description;
     this.client_email = client_email;
@@ -90,6 +92,14 @@ public class RequirementModule implements Serializable{
 
   public void setR_id(long r_id) {
     this.r_id = r_id;
+  }
+
+  public long getServer_req_id() {
+    return server_req_id;
+  }
+
+  public void setServer_req_id(long server_req_id) {
+    this.server_req_id = server_req_id;
   }
 
   public String getTitle() {
@@ -215,7 +225,7 @@ public class RequirementModule implements Serializable{
       cursor = db.query(databaseHelper.TABLE_REQUIREMENT, new String[]{databaseHelper.KEY_id,databaseHelper.KEY_title,
               databaseHelper.KEY_description, databaseHelper.KEY_client_email, databaseHelper.KEY_location, databaseHelper.KEY_area,
               databaseHelper.KEY_range,databaseHelper.KEY_price,databaseHelper.KEY_price_range,databaseHelper.KEY_type,
-              databaseHelper.KEY_created,databaseHelper.KEY_status}, databaseHelper.KEY_id + "=?",
+              databaseHelper.KEY_created,databaseHelper.KEY_status,databaseHelper.KEY_server_req_id}, databaseHelper.KEY_id + "=?",
           new String[]{String.valueOf(propertyId)}, null, null, null, null);
     }
 
@@ -223,6 +233,7 @@ public class RequirementModule implements Serializable{
       while (cursor.isAfterLast() == false) {
 
         long id = cursor.getLong(cursor.getColumnIndex(databaseHelper.KEY_id));
+        long server_req_id = cursor.getLong(cursor.getColumnIndex(databaseHelper.KEY_server_req_id));
         String title = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_title));
         String description = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_description));
         String client_email = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_client_email));
@@ -235,7 +246,7 @@ public class RequirementModule implements Serializable{
         String created = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_created));
         int status = cursor.getInt(cursor.getColumnIndex(databaseHelper.KEY_status));
 
-        requirementList.add(new RequirementModule(id,title,description,client_email,location,area,range,price,price_range,type,created,status));
+        requirementList.add(new RequirementModule(id,server_req_id,title,description,client_email,location,area,range,price,price_range,type,created,status));
         cursor.moveToNext();
       }
     }

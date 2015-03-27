@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.NoConnectionError;
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 
 import org.json.JSONException;
@@ -28,7 +29,9 @@ import propagate.com.propagate_client.database.RequirementModule;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
 import propagate.com.propagate_client.property.PropertyListingActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;
+import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.utils.CustomAdapterInterface;
+import propagate.com.propagate_client.volleyRequest.APIHandler;
 import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 
 /**
@@ -40,6 +43,7 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
   ImageView imgAddReq;
   RequirementListAdapter requirementListAdapter;
   private long requirement_id;
+  private RequirementModule requirementModule;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +97,7 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
   }
 
   private void showRemovePopup(final RequirementModule requirementModule){
+    this.requirementModule = requirementModule;
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
     // set dialog message
     alertDialogBuilder
@@ -100,10 +105,8 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
         .setCancelable(false)
         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog,int id) {
-
-            RequirementModule.getInstance().deleteProperty(getApplicationContext(),requirementModule.getR_id());
-            requirementListAdapter.remove(requirementModule);
-            requirementListAdapter.notifyDataSetChanged();
+            requirement_id = requirementModule.getR_id();
+            deleteRequirement(requirementModule.getServer_req_id());
             dialog.dismiss();
           }
         })
@@ -118,6 +121,16 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
 
     // show it
     alertDialog.show();
+  }
+
+  private void deleteRequirement(long req_id){
+    Log.e("Delete req",req_id+"");
+    APIHandler.getInstance(RequirementListingActivity.this).restAPIRequest(
+        Request.Method.DELETE,
+        Constants.postRequirementUrl+"/"+req_id,
+        null,
+        null
+    );
   }
 
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -174,6 +187,9 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
 
               break;
             case "delete":
+              RequirementModule.getInstance().deleteProperty(getApplicationContext(),requirement_id);
+              requirementListAdapter.remove(requirementModule);
+              requirementListAdapter.notifyDataSetChanged();
               break;
           }
         } catch (JSONException e) {
@@ -186,9 +202,9 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
   @Override
   public void OnRequestErrorResponse(VolleyError error) {
     if(error instanceof NoConnectionError)
-      Log.e("error response", "NoConnectionError");
+      Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
     else if(error.networkResponse != null){
-      Log.e("error code", "" + error.networkResponse.statusCode);
+      CommonFunctions.errorResponseHandler(getApplicationContext(), error);
     }
   }
 

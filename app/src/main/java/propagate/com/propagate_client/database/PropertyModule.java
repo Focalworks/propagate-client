@@ -20,6 +20,7 @@ public class PropertyModule implements Serializable{
   private ContentValues contentValues;
 
   private long p_id;
+  private long server_prop_id;
   private String title;
   private String desc;
   private int agent_id;
@@ -70,8 +71,9 @@ public class PropertyModule implements Serializable{
     this.type = type;
   }
 
-  public PropertyModule(long id, String title, String description, int agent_id, String client_email, String location, String address, String area, String price, String type, String created, int status) {
+  public PropertyModule(long id,long server_prop_id, String title, String description, int agent_id, String client_email, String location, String address, String area, String price, String type, String created, int status) {
     this.p_id = id;
+    this.server_prop_id = server_prop_id;
     this.title = title;
     this.desc = description;
     this.agent_id = agent_id;
@@ -91,6 +93,14 @@ public class PropertyModule implements Serializable{
 
   public void setP_id(long p_id) {
     this.p_id = p_id;
+  }
+
+  public long getServer_prop_id() {
+    return server_prop_id;
+  }
+
+  public void setServer_prop_id(long server_prop_id) {
+    this.server_prop_id = server_prop_id;
   }
 
   public String getTitle() {
@@ -216,7 +226,7 @@ public class PropertyModule implements Serializable{
       cursor = db.query(databaseHelper.TABLE_PROPERTY, new String[]{databaseHelper.KEY_id,databaseHelper.KEY_title,
               databaseHelper.KEY_description, databaseHelper.KEY_agent_id, databaseHelper.KEY_client_email,
               databaseHelper.KEY_location, databaseHelper.KEY_address, databaseHelper.KEY_area,
-              databaseHelper.KEY_price,databaseHelper.KEY_type,databaseHelper.KEY_created,databaseHelper.KEY_status}, databaseHelper.KEY_id + "=?",
+              databaseHelper.KEY_price,databaseHelper.KEY_type,databaseHelper.KEY_created,databaseHelper.KEY_status,databaseHelper.KEY_server_prop_id}, databaseHelper.KEY_id + "=?",
           new String[]{String.valueOf(propertyId)}, null, null, null, null);
     }
 
@@ -224,6 +234,7 @@ public class PropertyModule implements Serializable{
       while (cursor.isAfterLast() == false) {
 
         long id = cursor.getLong(cursor.getColumnIndex(databaseHelper.KEY_id));
+        long server_prop_id = cursor.getLong(cursor.getColumnIndex(databaseHelper.KEY_server_prop_id));
         String title = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_title));
         String description = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_description));
         int agent_id = cursor.getInt(cursor.getColumnIndex(databaseHelper.KEY_agent_id));
@@ -235,8 +246,8 @@ public class PropertyModule implements Serializable{
         String type = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_type));
         String created = cursor.getString(cursor.getColumnIndex(databaseHelper.KEY_created));
         int status = cursor.getInt(cursor.getColumnIndex(databaseHelper.KEY_status));
-
-        propertyList.add(new PropertyModule(id,title,description,agent_id,client_email,location,address,area,price,type,created,status));
+        Log.e("Server Id",server_prop_id+"");
+        propertyList.add(new PropertyModule(id,server_prop_id,title,description,agent_id,client_email,location,address,area,price,type,created,status));
         cursor.moveToNext();
       }
     }
@@ -257,7 +268,7 @@ public class PropertyModule implements Serializable{
     values.put(databaseHelper.KEY_status, 1);
     db.update(databaseHelper.TABLE_PROPERTY, values, databaseHelper.KEY_id+"="+pid, null);
     databaseHelper.close();
-    Log.i("Database", "Updated Property");
+    Log.i("Database", "Updated Property "+prop_id+" "+pid);
   }
 
   /*Update  details*/

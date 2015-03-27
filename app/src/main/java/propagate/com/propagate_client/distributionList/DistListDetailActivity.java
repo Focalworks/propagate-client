@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.VolleyError;
 
 import org.json.JSONException;
@@ -192,6 +193,10 @@ public class DistListDetailActivity extends Activity implements ContactAdapter.G
 
   @Override
   public void OnRequestErrorResponse(VolleyError error) {
-    Log.e("Response Error",error.toString());
+    if(error instanceof NoConnectionError)
+      Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
+    else if(error.networkResponse != null){
+      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
+    }
   }
 }

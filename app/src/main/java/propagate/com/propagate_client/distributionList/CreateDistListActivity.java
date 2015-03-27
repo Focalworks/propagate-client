@@ -156,10 +156,6 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
     switch (item.getItemId()){
       case R.id.menu_done:
         if (checkValidation()) {
-          group_id = DistListModule.getInstance().addDistList(getApplicationContext(), new DistListModule(etGroupName.getText().toString(), "1", selectedContactArrayList.size()));
-          for (Contact contact : selectedContactArrayList) {
-            DistListModule.getInstance().addDistListMembers(getApplicationContext(), new DistListModule(group_id, contact.getName(), Long.toString(contact.getContact_id()), contact.getProfile_pic()));
-          }
           new postCreateTask().execute();
         }
         break;
@@ -243,9 +239,9 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
   @Override
   public void OnRequestErrorResponse(VolleyError error) {
     if(error instanceof NoConnectionError)
-      Log.e("error response", "NoConnectionError");
+      Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
     else if(error.networkResponse != null){
-      Log.e("error code", "" + error.networkResponse.statusCode);
+      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
     }
   }
 
@@ -253,6 +249,12 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
 
     @Override
     protected Void doInBackground(Void... params) {
+
+      group_id = DistListModule.getInstance().addDistList(getApplicationContext(), new DistListModule(etGroupName.getText().toString(), "1", selectedContactArrayList.size()));
+      for (Contact contact : selectedContactArrayList) {
+        DistListModule.getInstance().addDistListMembers(getApplicationContext(), new DistListModule(group_id, contact.getName(), Long.toString(contact.getContact_id()), contact.getProfile_pic()));
+      }
+
       AppController.getInstance().postCreateDistList(CreateDistListActivity.this,group_id);
       return null;
     }

@@ -13,7 +13,10 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.VolleyError;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
@@ -285,6 +288,26 @@ public class CommonFunctions {
     }
 
     return trimmedString;
+  }
+
+  public static void errorResponseHandler(Context context,VolleyError error){
+    String json = null;
+    NetworkResponse response = error.networkResponse;
+    if(response != null && response.data != null){
+      switch(response.statusCode){
+        case 422:
+          json = new String(response.data);
+          json = CommonFunctions.trimMessage(json, "message");
+          if(json != null) Toast.makeText(context, "" + json, Toast.LENGTH_SHORT).show();
+          break;
+
+        case 500:
+          json = new String(response.data);
+          json = CommonFunctions.trimMessage(json, "message");
+          if(json != null) Toast.makeText(context,""+json,Toast.LENGTH_SHORT).show();
+          break;
+      }
+    }
   }
 
 }
