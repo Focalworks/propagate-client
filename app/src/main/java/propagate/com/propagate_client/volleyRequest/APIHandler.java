@@ -46,13 +46,16 @@ public class APIHandler{
     HashMap<String,String> userDetails = loginSessionManager.getUserDetails();
     String access_token = userDetails.get(loginSessionManager.KEY_ACCESS_TOKEN);
 
+    if(access_token != null)
+      url = url+"?access_token="+access_token;
+
     HashMap<String,String> headerParams = headers();
     if(headers != null)
       headerParams.putAll(headers);
 
     VolleyStringRequest postRequest = new VolleyStringRequest(
         method,
-        url+"?access_token="+access_token,
+        url,
         params,
         requestListener,
         requestErrorListener,

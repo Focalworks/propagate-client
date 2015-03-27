@@ -24,6 +24,7 @@ import java.util.Map;
 
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
+import propagate.com.propagate_client.gcm.GCMUtils;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.volleyRequest.APIHandler;
@@ -74,6 +75,7 @@ public class LoginActivity extends Activity implements APIHandlerInterface{
     Map<String, String> jsonParams = new HashMap<String, String>();
     jsonParams.put("username", etEmail.getText().toString());
     jsonParams.put("password", etPassword.getText().toString());
+    jsonParams.put("password", etPassword.getText().toString());
     jsonParams.put("client_id", "testclient");
     jsonParams.put("client_secret", "testpass");
     jsonParams.put("grant_type", "password");
@@ -117,15 +119,52 @@ public class LoginActivity extends Activity implements APIHandlerInterface{
     return val;
   }
 
+  /*
+  * Register device id for notification
+  * */
+  public void registerDeviceID(){
+    APIHandler.getInstance(this).restAPIRequest(
+        Request.Method.POST,
+        Constants.registerDeviceUrl,
+        getGroupParams(),
+        null
+    );
+  }
+
+  public Map<String,String> getGroupParams(){
+    String registrationId = GCMUtils.getRegistrationId(getApplicationContext());
+    Map<String, String> jsonParams = new HashMap<String, String>();
+    jsonParams.put("deviceId", CommonFunctions.getDeviceId(this));
+    jsonParams.put("registrationId", registrationId);
+
+    return jsonParams;
+  }
+
+  Response.Listener<String> registerDeviceRequestListener = new Response.Listener<String>() {
+    @Override
+    public void onResponse(String token) {
+      Log.e("Register Device", token);
+    }
+  };
+
+  Response.ErrorListener registerDeviceRequestErrorListener = new Response.ErrorListener() {
+    @Override
+    public void onErrorResponse(VolleyError error) {
+      Log.e("Register Error",error.toString());
+    }
+  };
+
   @Override
   public void OnRequestResponse(String response) {
     Log.i("Response", response);
     try {
       JSONObject jsonObj = new JSONObject(response);
       loginSessionManager.createUserLoginSession(etEmail.getText().toString(),jsonObj.getString("access_token"),jsonObj.getString("refresh_token"));
+      registerDeviceID();
       Toast.makeText(getApplicationContext(),"Login Successful",Toast.LENGTH_LONG).show();
       Intent intent = new Intent(getApplicationContext(), DistListingActivity.class);
       startActivity(intent);
+      finish();
     } catch (JSONException e) {
       e.printStackTrace();
     }

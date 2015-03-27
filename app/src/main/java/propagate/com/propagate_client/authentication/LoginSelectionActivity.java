@@ -112,6 +112,7 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
       case R.id.loginSelectionBtnDefaultLogin:
         Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
+        finish();
         break;
 
       case R.id.loginSelectionBtnGPlusSignIn:
@@ -144,7 +145,7 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
   * */
   @Override
   public void onTaskFinishedEvent(String result){
-    AppController.getInstance().registerDeviceID(result);
+    Log.e("Reg Id",result);
   }
 
 

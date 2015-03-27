@@ -77,45 +77,6 @@ public class AppController extends Application implements APIHandlerInterface{
   }
 
   /*
-  * Register device id for notification
-  * */
-  public void registerDeviceID(String deviceId){
-    VolleyStringRequest postRequest = new VolleyStringRequest(
-        Request.Method.POST,
-        Constants.registerDeviceUrl,
-        getGroupParams(deviceId),
-        registerDeviceRequestListener,
-        registerDeviceRequestErrorListener,
-        getApplicationContext()
-    );
-
-    AppController.getInstance().addToRequestQueue(postRequest);
-  }
-
-  public Map<String,String> getGroupParams(String registrationId){
-    Map<String, String> jsonParams = new HashMap<String, String>();
-    jsonParams.put("deviceId", CommonFunctions.getDeviceId(this));
-    jsonParams.put("registrationId", registrationId);
-
-    return jsonParams;
-  }
-
-  Response.Listener<String> registerDeviceRequestListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String token) {
-      Log.e("Register Device", token);
-    }
-  };
-
-  Response.ErrorListener registerDeviceRequestErrorListener = new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) {
-      Log.e("Register Error",error.toString());
-    }
-  };
-
-
-  /*
   * Post Created Distribution List
   * */
   public void postCreateDistList(Activity activity,long g_id){
