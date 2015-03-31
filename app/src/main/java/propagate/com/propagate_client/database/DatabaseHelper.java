@@ -21,6 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   public static final String TABLE_DIST_MEMBERS = "dist_list_members";
   public static final String TABLE_PROPERTY = "property";
   public static final String TABLE_REQUIREMENT = "requirement";
+  public static final String TABLE_REGISTER_USER = "register_user";
 
   //Common Columns
   public static final String KEY_id = "id";
@@ -55,6 +56,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   public static final String KEY_server_prop_id = "server_prop_id";
   public static final String KEY_server_req_id = "server_req_id";
 
+  //Register user Table Column Name
+  public static final String KEY_user_name = "user_name";
+  public static final String KEY_user_email = "user_email";
+  public static final String KEY_user_phone = "user_phone";
+  public static final String KEY_user_role = "user_role";
+  public static final String KEY_user_expr = "user_expr";
+  public static final String KEY_user_summary = "user_summary";
+
   public DatabaseHelper(Context context){
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
   }
@@ -82,6 +91,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         +KEY_location+" TEXT,"+KEY_area+" TEXT,"+KEY_range+" TEXT,"+KEY_price+" TEXT,"+KEY_price_range+" TEXT,"
         +KEY_type+" TEXT,"+KEY_created+ " TEXT,"+KEY_status+" INTEGER,"+KEY_server_req_id+" TEXT)";
     db.execSQL(CREATE_REQUIREMENT);
+
+    String CREATE_REGISTER_USER = "CREATE TABLE " + TABLE_REGISTER_USER+ "("
+        + KEY_id + " INTEGER PRIMARY KEY,"+ KEY_user_name + " TEXT,"+KEY_user_email+ " TEXT,"+KEY_user_phone+ " TEXT,"
+        +KEY_user_role+" TEXT,"+KEY_user_expr+" TEXT,"+KEY_user_summary+" TEXT)";
+    db.execSQL(CREATE_REGISTER_USER);
+
   }
 
   @Override
@@ -90,6 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_DIST_MEMBERS);
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROPERTY);
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_REQUIREMENT);
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_REGISTER_USER);
   }
 
   public SQLiteDatabase open(){

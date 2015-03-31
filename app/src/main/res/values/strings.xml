@@ -2,9 +2,9 @@
 
   <string name="Rs">\u20B9</string>
 
-  <string name="facebookAppID">548793841817925 </string>
+  <string name="facebookAppID">548793841817925</string>
 
-  <string name="app_name">propagate-client</string>
+  <string name="app_name">propaget-client</string>
 
   <string name="hello_world">Hello world!</string>
   <string name="action_settings">Settings</string>
@@ -35,9 +35,19 @@
   <string name="hint_requirement_email">Client Email</string>
   <string name="hint_requirement_location">Location</string>
   <string name="hint_requirement_area">Area in Sq Ft</string>
-  <string name="hint_requirement_range">Range</string>
+  <string name="hint_requirement_range">Area Range in Sq Ft</string>
   <string name="hint_requirement_price">Price</string>
   <string name="hint_requirement_price_range">Price Range</string>
+  <string name="search_hint">Search Member...</string>
+  <string name="hint_reg_user_name">Name</string>
+  <string name="hint_reg_user_email">Email</string>
+  <string name="hint_reg_user_phone">Phone Number</string>
+  <string name="hint_reg_user_password">Password</string>
+  <string name="hint_reg_user_conf_password">Confirm Password</string>
+
+  <!--Role-->
+  <string name="role_agent">Agent</string>
+  <string name="role_client">Client</string>
 
   <!-- Menu -->
   <string name="menu_dist_list">Distribution List</string>
@@ -46,5 +56,7 @@
   <string name="menu_logout">Logout</string>
   <string name="menu_Edit">Edit</string>
   <string name="menu_search">Search</string>
-  <string name="search_hint">Search Member...</string>
+  <string name="btn_register">Register</string>
+  <string name="btn_skip">Skip</string>
+
 </resources>

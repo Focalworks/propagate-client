@@ -3,27 +3,19 @@ package propagate.com.propagate_client.volleyRequest;
 import android.app.Activity;
 import android.app.Application;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import propagate.com.propagate_client.authentication.LoginSessionManager;
+import propagate.com.propagate_client.login.LoginSessionManager;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.database.RequirementModule;
@@ -155,10 +147,9 @@ public class AppController extends Application implements APIHandlerInterface{
   public Map<String,String> getPropertyParams(PropertyModule propertyInfo){
 
     Map<String, String> jsonParams = new HashMap<String, String>();
-    jsonParams.put("agentId", Long.toString(propertyInfo.getAgent_id()));
     jsonParams.put("title", propertyInfo.getTitle());
     jsonParams.put("description", propertyInfo.getDesc());
-    jsonParams.put("clientEmail", propertyInfo.getClient_email());
+    jsonParams.put("client_email", propertyInfo.getClient_email());
     jsonParams.put("location", propertyInfo.getLocation());
     jsonParams.put("address", propertyInfo.getAddress());
     jsonParams.put("area", propertyInfo.getArea());
@@ -192,12 +183,12 @@ public class AppController extends Application implements APIHandlerInterface{
     Map<String, String> jsonParams = new HashMap<String, String>();
     jsonParams.put("title", requirementInfo.getTitle());
     jsonParams.put("description", requirementInfo.getDescription());
-    jsonParams.put("clientEmail", requirementInfo.getClient_email());
+    jsonParams.put("client_email", requirementInfo.getClient_email());
     jsonParams.put("location", requirementInfo.getLocation());
     jsonParams.put("area", requirementInfo.getArea());
     jsonParams.put("range", requirementInfo.getRange());
     jsonParams.put("price", requirementInfo.getPrice());
-    jsonParams.put("priceRange", requirementInfo.getPrice_range());
+    jsonParams.put("price_range", requirementInfo.getPrice_range());
     jsonParams.put("type", requirementInfo.getType());
 
     return jsonParams;

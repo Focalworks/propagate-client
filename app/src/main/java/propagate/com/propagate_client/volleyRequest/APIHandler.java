@@ -1,23 +1,17 @@
 package propagate.com.propagate_client.volleyRequest;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import propagate.com.propagate_client.authentication.LoginSessionManager;
-import propagate.com.propagate_client.database.RequirementModule;
+import propagate.com.propagate_client.login.LoginSessionManager;
 import propagate.com.propagate_client.utils.CommonFunctions;
-import propagate.com.propagate_client.utils.Constants;
 
 /**
  * Created by kaustubh on 25/3/15.

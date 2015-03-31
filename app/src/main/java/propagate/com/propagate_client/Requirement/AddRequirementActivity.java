@@ -117,9 +117,6 @@ public class AddRequirementActivity extends Activity implements APIHandlerInterf
     if(TextUtils.isEmpty(etEmail.getText().toString())){
       etEmail.setError("Field can not be blank.");
       val=false;
-    }else if (CommonFunctions.isValidEmail(etEmail.getText().toString())){
-      etEmail.setError("Enter valid Email Id.");
-      val = false;
     }
     if(TextUtils.isEmpty(etLocation.getText().toString())){
       etLocation.setError("Field can not be blank.");
@@ -188,5 +185,6 @@ public class AddRequirementActivity extends Activity implements APIHandlerInterf
     else if(error.networkResponse != null){
       CommonFunctions.errorResponseHandler(getApplicationContext(),error);
     }
+    loadRequirementListingActivity();
   }
 }

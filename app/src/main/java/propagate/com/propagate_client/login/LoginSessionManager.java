@@ -1,4 +1,4 @@
-package propagate.com.propagate_client.authentication;
+package propagate.com.propagate_client.login;
 
 import android.content.Context;
 import android.content.Intent;

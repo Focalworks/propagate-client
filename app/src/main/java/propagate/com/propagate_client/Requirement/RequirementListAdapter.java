@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.database.RequirementModule;
+import propagate.com.propagate_client.utils.CustomAdapterInterface;
+import propagate.com.propagate_client.volleyRequest.AppController;
 
 /**
  * Created by kaustubh on 19/3/15.
@@ -24,12 +26,14 @@ public class RequirementListAdapter extends ArrayAdapter<RequirementModule> {
   private ArrayList<RequirementModule> requestArrayList;
   private Activity activity;
   private int property_row_view;
+  private CustomAdapterInterface customAdapterInterface;
 
   public RequirementListAdapter(Activity activity, int resource, ArrayList<RequirementModule> propertyArrayList) {
     super(activity, resource, propertyArrayList);
     this.activity = activity;
     this.property_row_view = resource;
     this.requestArrayList = propertyArrayList;
+    customAdapterInterface = (CustomAdapterInterface) activity;
   }
 
   @Override
@@ -84,7 +88,9 @@ public class RequirementListAdapter extends ArrayAdapter<RequirementModule> {
         imgRetry.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            Toast.makeText(activity, "Retry", Toast.LENGTH_LONG).show();
+            long req_id = requirementModule.getR_id();
+            customAdapterInterface.OnBtnClick(req_id);
+            AppController.getInstance().postCreateRequirement(activity,req_id);
           }
         });
       }

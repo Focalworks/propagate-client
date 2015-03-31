@@ -1,6 +1,7 @@
 package propagate.com.propagate_client.distributionList;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,32 +18,28 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.NoConnectionError;
-import com.android.volley.Request;
 import com.android.volley.VolleyError;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 import propagate.com.propagate_client.R;
-import propagate.com.propagate_client.authentication.LoginSessionManager;
+import propagate.com.propagate_client.login.LoginSessionManager;
 import propagate.com.propagate_client.contact.AddContactsActivity;
 import propagate.com.propagate_client.contact.Contact;
 import propagate.com.propagate_client.contact.ContactAdapter;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.utils.CommonFunctions;
-import propagate.com.propagate_client.utils.Constants;
-import propagate.com.propagate_client.volleyRequest.APIHandler;
 import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 import propagate.com.propagate_client.volleyRequest.AppController;
 
 public class CreateDistListActivity extends Activity implements ContactAdapter.GroupInterface,APIHandlerInterface{
 
+  ProgressDialog ringProgressDialog;
   ImageView btnAddMember;
   EditText etGroupName;
   ListView groupContactListView;
@@ -205,6 +202,15 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
     etAddMember.setAdapter(contactAdapter);
   }
 
+  public void launchProgressDialog() {
+    ringProgressDialog = ProgressDialog.show(CreateDistListActivity.this, "Please wait ...",	"Creating Distribution List...", true);
+    ringProgressDialog.setCancelable(false);
+  }
+
+  public void dismissProgressDialog() {
+    ringProgressDialog.dismiss();
+  }
+
   @Override
   public void OnRequestResponse(String response) {
     if(response != null){
@@ -224,6 +230,7 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
               JSONObject list = new JSONObject(jsonObj.getString("list"));
               long server_group_id = list.getLong("id");
               DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id,server_group_id);
+              dismissProgressDialog();
               loadGroupListing();
               break;
             case "delete":
@@ -243,13 +250,20 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
     else if(error.networkResponse != null){
       CommonFunctions.errorResponseHandler(getApplicationContext(),error);
     }
+    dismissProgressDialog();
+    loadGroupListing();
   }
 
   private class postCreateTask extends AsyncTask<Void,Void,Void>{
 
     @Override
-    protected Void doInBackground(Void... params) {
+    protected void onPreExecute() {
+      super.onPreExecute();
+      launchProgressDialog();
+    }
 
+    @Override
+    protected Void doInBackground(Void... params) {
       group_id = DistListModule.getInstance().addDistList(getApplicationContext(), new DistListModule(etGroupName.getText().toString(), "1", selectedContactArrayList.size()));
       for (Contact contact : selectedContactArrayList) {
         DistListModule.getInstance().addDistListMembers(getApplicationContext(), new DistListModule(group_id, contact.getName(), Long.toString(contact.getContact_id()), contact.getProfile_pic()));

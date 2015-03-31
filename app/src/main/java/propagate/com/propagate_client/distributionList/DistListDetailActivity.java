@@ -24,7 +24,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import propagate.com.propagate_client.R;
-import propagate.com.propagate_client.authentication.LoginSessionManager;
 import propagate.com.propagate_client.contact.Contact;
 import propagate.com.propagate_client.contact.ContactAdapter;
 import propagate.com.propagate_client.database.DistListModule;

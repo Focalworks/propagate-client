@@ -1,4 +1,4 @@
-package propagate.com.propagate_client.authentication;
+package propagate.com.propagate_client.login;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,8 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import org.json.JSONException;
@@ -29,8 +29,6 @@ import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.volleyRequest.APIHandler;
 import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
-import propagate.com.propagate_client.volleyRequest.AppController;
-import propagate.com.propagate_client.volleyRequest.VolleyStringRequest;
 
 /**
  * Created by kaustubh on 11/3/15.
@@ -140,20 +138,6 @@ public class LoginActivity extends Activity implements APIHandlerInterface{
     return jsonParams;
   }
 
-  Response.Listener<String> registerDeviceRequestListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String token) {
-      Log.e("Register Device", token);
-    }
-  };
-
-  Response.ErrorListener registerDeviceRequestErrorListener = new Response.ErrorListener() {
-    @Override
-    public void onErrorResponse(VolleyError error) {
-      Log.e("Register Error",error.toString());
-    }
-  };
-
   @Override
   public void OnRequestResponse(String response) {
     Log.i("Response", response);
@@ -172,6 +156,11 @@ public class LoginActivity extends Activity implements APIHandlerInterface{
 
   @Override
   public void OnRequestErrorResponse(VolleyError error) {
-    Log.i("Error Response", error.toString());
+    if(error instanceof NoConnectionError) {
+      Toast.makeText(getApplicationContext(), "No Connection Error", Toast.LENGTH_SHORT).show();
+    }
+    else if(error.networkResponse != null){
+      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
+    }
   }
 }

@@ -13,7 +13,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import propagate.com.propagate_client.R;
-import propagate.com.propagate_client.authentication.LoginSelectionActivity;
+import propagate.com.propagate_client.login.LoginSelectionActivity;
 
 /**
  * Created by kaustubh on 12/3/15.

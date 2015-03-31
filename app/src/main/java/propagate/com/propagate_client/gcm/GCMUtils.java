@@ -10,7 +10,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import propagate.com.propagate_client.authentication.LoginSelectionActivity;
+import propagate.com.propagate_client.login.LoginSelectionActivity;
 import propagate.com.propagate_client.utils.Constants;
 
 /**

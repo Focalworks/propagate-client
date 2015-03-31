@@ -177,5 +177,6 @@ public class AddPropertyActivity extends Activity implements APIHandlerInterface
     else if(error.networkResponse != null){
       CommonFunctions.errorResponseHandler(getApplicationContext(),error);
     }
+    loadPropertyListingActivity();
   }
 }

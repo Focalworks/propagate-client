@@ -1,4 +1,4 @@
-package propagate.com.propagate_client.authentication;
+package propagate.com.propagate_client.login;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,7 +29,6 @@ import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
 import propagate.com.propagate_client.gcm.GCMUtils;
 import propagate.com.propagate_client.gcm.RegisterDeviceTask;
-import propagate.com.propagate_client.volleyRequest.AppController;
 
 
 public class LoginSelectionActivity extends Activity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks,RegisterDeviceTask.OnTaskExecutionFinished {

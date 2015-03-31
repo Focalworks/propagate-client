@@ -22,11 +22,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.Requirement.RequirementListingActivity;
-import propagate.com.propagate_client.authentication.LoginSessionManager;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.property.PropertyListingActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;

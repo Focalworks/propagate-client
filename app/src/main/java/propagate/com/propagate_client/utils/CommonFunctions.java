@@ -1,6 +1,7 @@
 package propagate.com.propagate_client.utils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageInfo;
