@@ -1,5 +1,6 @@
 package propagate.com.propagate_client.login;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -8,7 +9,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.facebook.Session;
@@ -33,11 +38,13 @@ import propagate.com.propagate_client.gcm.RegisterDeviceTask;
 
 public class LoginSelectionActivity extends Activity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks,RegisterDeviceTask.OnTaskExecutionFinished {
 
-  private Button btnDefaultLogin;
+  private LinearLayout linearSignOptions,linearSignIN;
+  private Button btnDefaultLogin,btnSignIn,btnSignUp;
   private SignInButton btnGPlusLogin;
   private LoginButton btnFBSignIn;
   private UiLifecycleHelper uiHelper;
   private String loginType = "facebook";
+  private Animation animUP,animGoUP;
 
   /* Track whether the sign-in button has been clicked so that we know to resolve
   all issues preventing sign-in without waiting.
@@ -76,9 +83,17 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
     uiHelper = new UiLifecycleHelper(this, statusCallback);
     uiHelper.onCreate(savedInstanceState);
 
+    linearSignOptions = (LinearLayout) findViewById(R.id.linearLoginOptions);
+    linearSignIN = (LinearLayout) findViewById(R.id.linearSignUp);
 
     btnDefaultLogin = (Button) findViewById(R.id.loginSelectionBtnDefaultLogin);
     btnDefaultLogin.setOnClickListener(this);
+
+    btnSignIn = (Button) findViewById(R.id.loginSelectionSignIn);
+    btnSignIn.setOnClickListener(this);
+
+    btnSignUp = (Button) findViewById(R.id.loginSelectionSignUP);
+    btnSignUp.setOnClickListener(this);
 
     btnGPlusLogin = (SignInButton) findViewById(R.id.loginSelectionBtnGPlusSignIn);
     btnGPlusLogin.setOnClickListener(this);
@@ -103,6 +118,21 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
         .build();
 
     registerDeviceForGCM();
+
+    animUP = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
+    animGoUP = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_go_up);
+    animGoUP.setAnimationListener(new Animation.AnimationListener() {
+      @Override
+      public void onAnimationStart(Animation animation) {}
+
+      @Override
+      public void onAnimationEnd(Animation animation) {
+        linearSignOptions.setVisibility(View.GONE);
+      }
+
+      @Override
+      public void onAnimationRepeat(Animation animation) {}
+    });
   }
 
   @Override
@@ -120,6 +150,18 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
           mSignInClicked = true;
           resolveSignInError();
         }
+        break;
+
+      case R.id.loginSelectionSignIn:
+        Intent i = new Intent(getApplicationContext(),RegisterUserActivity.class);
+        startActivity(i);
+        finish();
+        break;
+
+      case R.id.loginSelectionSignUP:
+        linearSignOptions.startAnimation(animGoUP);
+        linearSignIN.setVisibility(View.VISIBLE);
+        linearSignIN.startAnimation(animUP);
         break;
     }
   }
@@ -295,28 +337,6 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
     }else if(loginType == "facebook"){
       uiHelper.onActivityResult(requestCode, responseCode, intent);
     }
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_main, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();
-
-    //noinspection SimplifiableIfStatement
-    /*if (id == R.id.action_settings) {
-      return true;
-    }*/
-
-    return super.onOptionsItemSelected(item);
   }
 
 }

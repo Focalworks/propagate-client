@@ -32,14 +32,11 @@ import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 /**
  * Created by kaustubh on 31/3/15.
  */
-public class RegisterUserDetailActivity extends Activity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener,APIHandlerInterface {
+public class RegisterUserDetailActivity extends Activity implements View.OnClickListener, APIHandlerInterface {
 
   EditText etExpr,etSummary;
-  private RadioGroup rgRole;
-  private RadioButton rdClient,rdAgent;
   Button btnSkip,btnSubmit;
   private long reg_id;
-  private String role;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +50,7 @@ public class RegisterUserDetailActivity extends Activity implements View.OnClick
     }
 
     etExpr = (EditText) findViewById(R.id.register_detail_expr);
-    etExpr = (EditText) findViewById(R.id.register_detail_summary);
-
-    rgRole = (RadioGroup) findViewById(R.id.register_detail_role_group);
-    rgRole.setOnCheckedChangeListener(this);
-
-    rdClient = (RadioButton) findViewById(R.id.register_detail_role_client);
-    rdAgent = (RadioButton) findViewById(R.id.register_detail_role_agent);
+    etSummary = (EditText) findViewById(R.id.register_detail_summary);
 
     btnSkip = (Button) findViewById(R.id.register_detail_btnSkip);
     btnSkip.setOnClickListener(this);
@@ -75,11 +66,8 @@ public class RegisterUserDetailActivity extends Activity implements View.OnClick
         break;
 
       case R.id.register_detail_btnSubmit:
-        if(rgRole.getCheckedRadioButtonId() == -1){
-          Toast.makeText(getApplicationContext(), "Please select user Role", Toast.LENGTH_SHORT).show();
-        }else{
-          RegisterModule.getInstance().updateUserDetails(getApplicationContext(), reg_id, role, etExpr.getText().toString(), etSummary.getText().toString());
-        }
+        RegisterModule.getInstance().updateUserDetails(getApplicationContext(), reg_id, etExpr.getText().toString(), etSummary.getText().toString());
+        postRegisterUserDetail();
         break;
 
       default:
@@ -94,9 +82,9 @@ public class RegisterUserDetailActivity extends Activity implements View.OnClick
   }
 
   public void postRegisterUserDetail(){
-    APIHandler.getInstance(getApplicationContext()).restAPIRequest(
-        Request.Method.POST,
-        Constants.registerUserUrl,
+    APIHandler.getInstance(RegisterUserDetailActivity.this).restAPIRequest(
+        Request.Method.PUT,
+        Constants.registerUserUrl+"/0",
         getUserParams(),
         null
     );
@@ -105,28 +93,10 @@ public class RegisterUserDetailActivity extends Activity implements View.OnClick
   public Map<String,String> getUserParams(){
 
     Map<String, String> jsonParams = new HashMap<String, String>();
-    jsonParams.put("role", role);
     jsonParams.put("experience", etExpr.getText().toString());
     jsonParams.put("summary", etSummary.getText().toString());
 
     return jsonParams;
-  }
-
-  @Override
-  public void onCheckedChanged(RadioGroup group, int checkedId) {
-    RadioButton radioBtn = (RadioButton)findViewById(checkedId);
-    switch (checkedId) {
-      case R.id.register_detail_role_client:
-        role = radioBtn.getText().toString();
-        break;
-
-      case R.id.register_detail_role_agent:
-        role = radioBtn.getText().toString();
-        break;
-
-      default:
-        break;
-    }
   }
 
   @Override
@@ -144,7 +114,7 @@ public class RegisterUserDetailActivity extends Activity implements View.OnClick
           String type = jsonObj.getString("type");
           switch (type){
             case "save":
-              JSONObject register = new JSONObject(jsonObj.getString("reg_detail"));
+              JSONObject register = new JSONObject(jsonObj.getString("reg"));
               loadDistListing();
               finish();
               break;

@@ -5,33 +5,13 @@
     android:layout_height="fill_parent"
     android:layout_margin="5dp">
 
-  <RadioGroup
-      android:id="@+id/register_detail_role_group"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-    <RadioButton
-        android:id="@+id/register_detail_role_agent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/role_agent"
-        android:textSize="16sp" />
-
-    <RadioButton
-        android:id="@+id/register_detail_role_client"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/role_client"
-        android:textSize="16sp" />
-  </RadioGroup>
-
   <EditText
       android:id="@+id/register_detail_expr"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:hint="Experience"
       android:inputType="textAutoComplete"
-      android:imeOptions="flagNavigateNext"
-      android:layout_below="@+id/register_detail_role_group"/>
+      android:imeOptions="flagNavigateNext"/>
 
   <EditText
       android:id="@+id/register_detail_summary"

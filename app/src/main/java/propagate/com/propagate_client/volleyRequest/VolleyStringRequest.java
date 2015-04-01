@@ -1,6 +1,7 @@
 package propagate.com.propagate_client.volleyRequest;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -55,6 +56,7 @@ public class VolleyStringRequest extends StringRequest {
 
   @Override
   protected Response parseNetworkResponse(NetworkResponse response) {
+    Log.e("response code",response.statusCode+"");
     String parsed = null;
     if(response.statusCode == 201 || response.statusCode == 200) {
       try {
@@ -62,6 +64,7 @@ public class VolleyStringRequest extends StringRequest {
       } catch (UnsupportedEncodingException e) {
         parsed = new String(response.data);
       }
+
     }
     return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));
   }

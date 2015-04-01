@@ -32,10 +32,11 @@ public class RegisterModule {
 
   public RegisterModule(){}
 
-  public RegisterModule(String name, String email, String number) {
+  public RegisterModule(String name, String email, String number,String role) {
     this.name = name;
     this.email = email;
     this.number = number;
+    this.role = role;
   }
 
   public RegisterModule(long id, String name, String email, String number, String role,String expr,String summary) {
@@ -112,6 +113,7 @@ public class RegisterModule {
     contentValues.put(databaseHelper.KEY_user_name, registerModule.getName());
     contentValues.put(databaseHelper.KEY_user_phone, registerModule.getNumber());
     contentValues.put(databaseHelper.KEY_user_email, registerModule.getEmail());
+    contentValues.put(databaseHelper.KEY_user_role, registerModule.getRole());
 
     long lastId = db.insert(databaseHelper.TABLE_REGISTER_USER,null,contentValues);
     databaseHelper.close();
@@ -121,15 +123,14 @@ public class RegisterModule {
   }
 
   /*Update user details Expr and Summary*/
-  public void updateUserDetails(Context context,long reg_id,String role,String expr,String summary){
+  public void updateUserDetails(Context context,long reg_id,String expr,String summary){
     DatabaseHelper databaseHelper = new DatabaseHelper(context);
     db = databaseHelper.open();
 
     ContentValues values = new ContentValues();
-    values.put(databaseHelper.KEY_user_role, role);
     values.put(databaseHelper.KEY_user_expr, expr);
     values.put(databaseHelper.KEY_user_summary, summary);
-    db.update(databaseHelper.TABLE_DIST_DETAIL, values, databaseHelper.KEY_id+"="+reg_id, null);
+    db.update(databaseHelper.TABLE_REGISTER_USER, values, databaseHelper.KEY_id+"="+reg_id, null);
     databaseHelper.close();
     Log.i("Database", "Updated User Details");
   }

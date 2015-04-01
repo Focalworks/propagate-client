@@ -57,11 +57,31 @@
           android:imeOptions="actionDone"
           android:layout_below="@+id/register_user_pass"/>
 
+      <RadioGroup
+          android:id="@+id/register_user_role_group"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/register_user_confirm_pass">
+        <RadioButton
+            android:id="@+id/register_user_role_agent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/role_agent"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/register_user_role_client"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/role_client"
+            android:textSize="16sp" />
+      </RadioGroup>
+
       <Button
           android:id="@+id/register_user_btn_register"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_below="@+id/register_user_confirm_pass"
+          android:layout_below="@+id/register_user_role_group"
           android:text="@string/btn_register"
           android:layout_centerHorizontal="true"/>
     </RelativeLayout>

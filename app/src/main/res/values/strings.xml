@@ -11,6 +11,8 @@
 
   <!--Button text-->
   <string name="btn_login_default">Login Using Propagate Account</string>
+  <string name="btn_login_sign_in">SIGN IN</string>
+  <string name="btn_login_sign_up">SIGN UP</string>
   <string name="btn_login_other">Login Using Other Accounts</string>
 
   <string name="btnLogin">Login</string>

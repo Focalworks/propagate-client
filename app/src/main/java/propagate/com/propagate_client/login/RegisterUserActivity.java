@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -35,16 +37,22 @@ import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 /**
  * Created by kaustubh on 31/3/15.
  */
-public class RegisterUserActivity extends Activity implements APIHandlerInterface {
+public class RegisterUserActivity extends Activity implements APIHandlerInterface, RadioGroup.OnCheckedChangeListener {
 
   private EditText etName,etEmail,etNumber,etPassword,etConfPassword;
+  private RadioGroup rgRole;
+  private RadioButton rdClient,rdAgent;
   private Button btnRegister;
   private long id;
+  private String role;
+  LoginSessionManager loginSessionManager;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.register_user);
+
+    loginSessionManager = new LoginSessionManager(this);
 
     etName = (EditText) findViewById(R.id.register_user_name);
     etEmail = (EditText) findViewById(R.id.register_user_email);
@@ -52,20 +60,30 @@ public class RegisterUserActivity extends Activity implements APIHandlerInterfac
     etPassword = (EditText) findViewById(R.id.register_user_pass);
     etConfPassword = (EditText) findViewById(R.id.register_user_confirm_pass);
 
+    rgRole = (RadioGroup) findViewById(R.id.register_user_role_group);
+    rgRole.setOnCheckedChangeListener(this);
+
+    rdClient = (RadioButton) findViewById(R.id.register_user_role_client);
+    rdAgent = (RadioButton) findViewById(R.id.register_user_role_agent);
+
     btnRegister = (Button) findViewById(R.id.register_user_btn_register);
     btnRegister.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         if(checkValidation()) {
-          id = RegisterModule.getInstance().addRegisterUser(getApplicationContext(), new RegisterModule(etName.getText().toString(), etEmail.getText().toString(), etNumber.getText().toString()));
-          postRegisterUser();
+          if(rgRole.getCheckedRadioButtonId() == -1){
+            Toast.makeText(getApplicationContext(), "Please select user Role", Toast.LENGTH_SHORT).show();
+          }else {
+            id = RegisterModule.getInstance().addRegisterUser(getApplicationContext(), new RegisterModule(etName.getText().toString(), etEmail.getText().toString(), etNumber.getText().toString(),role));
+            postRegisterUser();
+          }
         }
       }
     });
   }
 
   public void postRegisterUser(){
-    APIHandler.getInstance(getApplicationContext()).restAPIRequest(
+    APIHandler.getInstance(RegisterUserActivity.this).restAPIRequest(
         Request.Method.POST,
         Constants.registerUserUrl,
         getUserParams(),
@@ -77,9 +95,10 @@ public class RegisterUserActivity extends Activity implements APIHandlerInterfac
 
     Map<String, String> jsonParams = new HashMap<String, String>();
     jsonParams.put("name", etName.getText().toString());
-    jsonParams.put("phoneNumber", etNumber.getText().toString());
+    jsonParams.put("phone_number", etNumber.getText().toString());
     jsonParams.put("email", etEmail.getText().toString());
     jsonParams.put("password", etPassword.getText().toString());
+    jsonParams.put("role", role);
 
     return jsonParams;
   }
@@ -99,7 +118,8 @@ public class RegisterUserActivity extends Activity implements APIHandlerInterfac
           String type = jsonObj.getString("type");
           switch (type){
             case "save":
-              JSONObject register = new JSONObject(jsonObj.getString("reg"));
+              JSONObject tokenObj = new JSONObject(jsonObj.getString("token"));
+              loginSessionManager.createUserLoginSession(etEmail.getText().toString(),tokenObj.getString("access_token"),tokenObj.getString("refresh_token"));
               Intent intent = new Intent(getApplicationContext(), RegisterUserDetailActivity.class);
               intent.putExtra("reg_id", id);
               startActivity(intent);
@@ -163,4 +183,22 @@ public class RegisterUserActivity extends Activity implements APIHandlerInterfac
 
     return val;
   }
+
+  @Override
+  public void onCheckedChanged(RadioGroup group, int checkedId) {
+    RadioButton radioBtn = (RadioButton)findViewById(checkedId);
+    switch (checkedId) {
+      case R.id.register_user_role_client:
+        role = radioBtn.getText().toString();
+        break;
+
+      case R.id.register_user_role_agent:
+        role = radioBtn.getText().toString();
+        break;
+
+      default:
+        break;
+    }
+  }
 }
+
