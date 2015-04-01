@@ -1,15 +1,11 @@
 package propagate.com.propagate_client.login;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -73,7 +69,6 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
     super.onCreate(savedInstanceState);
     setContentView(R.layout.login_selection);
 
-    animScale = AnimationUtils.loadAnimation(this,R.anim.anim_scale);
     loginSessionManager = new LoginSessionManager(this);
 
     if(loginSessionManager.isUserLoggedIn()){
@@ -121,6 +116,7 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
 
     registerDeviceForGCM();
 
+    animScale = AnimationUtils.loadAnimation(this,R.anim.scale_down);
     animUP = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
     animGoUP = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_go_up);
     animGoUP.setAnimationListener(new Animation.AnimationListener() {
@@ -161,10 +157,9 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
         break;
 
       case R.id.loginSelectionSignIn:
-        v.startAnimation(animScale);
-        /*linearSignOptions.startAnimation(animGoUP);
+        linearSignOptions.startAnimation(animGoUP);
         linearSignIN.setVisibility(View.VISIBLE);
-        linearSignIN.startAnimation(animUP);*/
+        linearSignIN.startAnimation(animUP);
         break;
     }
   }

@@ -200,5 +200,12 @@ public class RegisterUserActivity extends Activity implements APIHandlerInterfac
         break;
     }
   }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    Intent intent = new Intent(getApplicationContext(),LoginSelectionActivity.class);
+    startActivity(intent);
+  }
 }
 

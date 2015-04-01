@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -46,14 +48,18 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
   private long requirement_id;
   private RequirementModule requirementModule;
   private ProgressDialog ringProgressDialog;
+  private Animation animUP;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_listing);
 
+    animUP = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.plus_slide_up);
+
     imgAddReq = (ImageView) findViewById(R.id.imgAddBtn);
     imgAddReq.setVisibility(View.VISIBLE);
+    imgAddReq.startAnimation(animUP);
     imgAddReq.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {

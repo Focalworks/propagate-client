@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -47,14 +49,18 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
   };
   private long group_id;
   private ProgressDialog ringProgressDialog;
+  private Animation animUP;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_listing);
 
+    animUP = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.plus_slide_up);
+
     imgAddGroup = (ImageView) findViewById(R.id.imgAddBtn);
     imgAddGroup.setVisibility(View.VISIBLE);
+    imgAddGroup.startAnimation(animUP);
     imgAddGroup.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {

@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -52,14 +54,18 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
   long property_id;
   PropertyModule propertyModule;
   private ProgressDialog ringProgressDialog;
+  private Animation animUP;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_listing);
 
+    animUP = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.plus_slide_up);
+
     imgAddProperty = (ImageView) findViewById(R.id.imgAddBtn);
     imgAddProperty.setVisibility(View.VISIBLE);
+    imgAddProperty.startAnimation(animUP);
     imgAddProperty.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
