@@ -66,12 +66,14 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
   private boolean mIntentInProgress;
   private static final int RC_SIGN_IN = 0;
   private LoginSessionManager loginSessionManager;
+  private Animation animScale;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.login_selection);
 
+    animScale = AnimationUtils.loadAnimation(this,R.anim.anim_scale);
     loginSessionManager = new LoginSessionManager(this);
 
     if(loginSessionManager.isUserLoggedIn()){
@@ -152,16 +154,17 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
         }
         break;
 
-      case R.id.loginSelectionSignIn:
+      case R.id.loginSelectionSignUP:
         Intent i = new Intent(getApplicationContext(),RegisterUserActivity.class);
         startActivity(i);
         finish();
         break;
 
-      case R.id.loginSelectionSignUP:
-        linearSignOptions.startAnimation(animGoUP);
+      case R.id.loginSelectionSignIn:
+        v.startAnimation(animScale);
+        /*linearSignOptions.startAnimation(animGoUP);
         linearSignIN.setVisibility(View.VISIBLE);
-        linearSignIN.startAnimation(animUP);
+        linearSignIN.startAnimation(animUP);*/
         break;
     }
   }

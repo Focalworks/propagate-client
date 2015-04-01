@@ -1,6 +1,7 @@
 package propagate.com.propagate_client.Requirement;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,8 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import propagate.com.propagate_client.R;
-import propagate.com.propagate_client.contact.Contact;
-import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.database.RequirementModule;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
@@ -38,6 +37,7 @@ public class AddRequirementActivity extends Activity implements APIHandlerInterf
   Button btnSubmit;
   RequirementModule requirementModule;
   long requirement_id;
+  private ProgressDialog ringProgressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +88,7 @@ public class AddRequirementActivity extends Activity implements APIHandlerInterf
                 etRange.getText().toString(), etPrice.getText().toString(), etPriceRange.getText().toString(), spType.getSelectedItem().toString()));
 
             AppController.getInstance().postCreateRequirement(AddRequirementActivity.this,requirement_id);
+            launchProgressDialog();
           } else {
             RequirementModule.getInstance().updateRequirement(getApplicationContext(), new RequirementModule(requirement_id, etTitle.getText().toString(),
                 etDescription.getText().toString(), etEmail.getText().toString(), etLocation.getText().toString(), etArea.getText().toString(),
@@ -142,6 +143,15 @@ public class AddRequirementActivity extends Activity implements APIHandlerInterf
     return val;
   }
 
+  public void launchProgressDialog() {
+    ringProgressDialog = ProgressDialog.show(AddRequirementActivity.this, "Please wait ...", "Creating Requirement...", true);
+    ringProgressDialog.setCancelable(false);
+  }
+
+  public void dismissProgressDialog() {
+    ringProgressDialog.dismiss();
+  }
+
   @Override
   public void onBackPressed() {
     super.onBackPressed();
@@ -157,16 +167,16 @@ public class AddRequirementActivity extends Activity implements APIHandlerInterf
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
       String data = CommonFunctions.trimMessage(response, "data");
-      if(data != null)
+      if(data != null) {
         try {
-          Log.i("data",data);
+          Log.i("data", data);
           JSONObject jsonObj = new JSONObject(data);
           String type = jsonObj.getString("type");
-          switch (type){
+          switch (type) {
             case "save":
               JSONObject list = new JSONObject(jsonObj.getString("req"));
               long server_req_id = list.getLong("id");
-              RequirementModule.getInstance().updateRequirementStatus(getApplicationContext(),requirement_id,server_req_id);
+              RequirementModule.getInstance().updateRequirementStatus(getApplicationContext(), requirement_id, server_req_id);
               loadRequirementListingActivity();
               break;
             case "delete":
@@ -175,6 +185,8 @@ public class AddRequirementActivity extends Activity implements APIHandlerInterf
         } catch (JSONException e) {
           e.printStackTrace();
         }
+      }
+      dismissProgressDialog();
     }
   }
 
@@ -185,6 +197,7 @@ public class AddRequirementActivity extends Activity implements APIHandlerInterf
     else if(error.networkResponse != null){
       CommonFunctions.errorResponseHandler(getApplicationContext(),error);
     }
+    dismissProgressDialog();
     loadRequirementListingActivity();
   }
 }

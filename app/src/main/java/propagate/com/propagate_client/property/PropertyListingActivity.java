@@ -2,6 +2,7 @@ package propagate.com.propagate_client.property;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
   PropertyListAdapter propertyListAdapter;
   long property_id;
   PropertyModule propertyModule;
+  private ProgressDialog ringProgressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +112,7 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
         null,
         null
     );
+    launchProgressDialog("Deleting Property ...");
   }
 
   private void showRemovePopup(final PropertyModule propertyModule){
@@ -121,9 +124,9 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
         .setCancelable(false)
         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog,int id) {
+            dialog.dismiss();
             property_id = propertyModule.getP_id();
             deleteProperty(propertyModule.getServer_prop_id());
-            dialog.dismiss();
           }
         })
         .setNegativeButton("No",new DialogInterface.OnClickListener() {
@@ -137,6 +140,15 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
 
     // show it
     alertDialog.show();
+  }
+
+  public void launchProgressDialog(String msg) {
+    ringProgressDialog = ProgressDialog.show(PropertyListingActivity.this, "Please wait ...", msg, true);
+    ringProgressDialog.setCancelable(false);
+  }
+
+  public void dismissProgressDialog() {
+    ringProgressDialog.dismiss();
   }
 
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,23 +189,23 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
       String data = CommonFunctions.trimMessage(response, "data");
-      if(data != null)
+      if(data != null) {
         try {
-          Log.i("data",data);
+          Log.i("data", data);
           JSONObject jsonObj = new JSONObject(data);
           String type = jsonObj.getString("type");
-          switch (type){
+          switch (type) {
             case "save":
               JSONObject list = new JSONObject(jsonObj.getString("prop"));
               long server_prop_id = list.getLong("id");
               PropertyModule.getInstance().updatePropertyStatus(getApplicationContext(), property_id, server_prop_id);
               ArrayList<PropertyModule> propertyList = PropertyModule.getInstance().getPropertyInfo(this, 0);
-              propertyListAdapter = new PropertyListAdapter(this, R.layout.custom_property_view,propertyList);
+              propertyListAdapter = new PropertyListAdapter(this, R.layout.custom_property_view, propertyList);
               propertyListAdapter.notifyDataSetChanged();
 
               break;
             case "delete":
-              PropertyModule.getInstance().deleteProperty(getApplicationContext(),property_id);
+              PropertyModule.getInstance().deleteProperty(getApplicationContext(), property_id);
               propertyListAdapter.remove(propertyModule);
               propertyListAdapter.notifyDataSetChanged();
               break;
@@ -201,6 +213,8 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
         } catch (JSONException e) {
           e.printStackTrace();
         }
+      }
+      dismissProgressDialog();
     }
   }
 
@@ -209,12 +223,14 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
     if(error instanceof NoConnectionError)
       Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
     else if(error.networkResponse != null){
-      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
+      CommonFunctions.errorResponseHandler(getApplicationContext(), error);
     }
+    dismissProgressDialog();
   }
 
   @Override
   public void OnBtnClick(long id) {
     property_id = id;
+    launchProgressDialog("Creating Property ...");
   }
 }

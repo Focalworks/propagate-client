@@ -1,6 +1,7 @@
 package propagate.com.propagate_client.property;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import java.util.List;
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.database.RequirementModule;
+import propagate.com.propagate_client.distributionList.DistListingActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
 import propagate.com.propagate_client.volleyRequest.AppController;
@@ -37,6 +39,7 @@ public class AddPropertyActivity extends Activity implements APIHandlerInterface
   Button btnSubmit;
   PropertyModule propertyModule;
   long property_id;
+  private ProgressDialog ringProgressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +144,16 @@ public class AddPropertyActivity extends Activity implements APIHandlerInterface
     loadPropertyListingActivity();
   }
 
+
+  public void launchProgressDialog() {
+    ringProgressDialog = ProgressDialog.show(AddPropertyActivity.this, "Please wait ...", "Creating Property...", true);
+    ringProgressDialog.setCancelable(false);
+  }
+
+  public void dismissProgressDialog() {
+    ringProgressDialog.dismiss();
+  }
+
   @Override
   public void OnRequestResponse(String response) {
     if(response != null){
@@ -175,7 +188,7 @@ public class AddPropertyActivity extends Activity implements APIHandlerInterface
     if(error instanceof NoConnectionError)
       Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
     else if(error.networkResponse != null){
-      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
+      CommonFunctions.errorResponseHandler(getApplicationContext(), error);
     }
     loadPropertyListingActivity();
   }

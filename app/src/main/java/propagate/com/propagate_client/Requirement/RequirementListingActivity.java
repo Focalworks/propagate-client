@@ -2,6 +2,7 @@ package propagate.com.propagate_client.Requirement;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
   RequirementListAdapter requirementListAdapter;
   private long requirement_id;
   private RequirementModule requirementModule;
+  private ProgressDialog ringProgressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +107,9 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
         .setCancelable(false)
         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog,int id) {
+            dialog.dismiss();
             requirement_id = requirementModule.getR_id();
             deleteRequirement(requirementModule.getServer_req_id());
-            dialog.dismiss();
           }
         })
         .setNegativeButton("No",new DialogInterface.OnClickListener() {
@@ -125,12 +127,22 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
 
   private void deleteRequirement(long req_id){
     Log.e("Delete req",req_id+"");
+    launchProgressDialog("Deleting requirement ...");
     APIHandler.getInstance(RequirementListingActivity.this).restAPIRequest(
         Request.Method.DELETE,
-        Constants.postRequirementUrl+"/"+req_id,
+        Constants.postRequirementUrl + "/" + req_id,
         null,
         null
     );
+  }
+
+  public void launchProgressDialog(String msg) {
+    ringProgressDialog = ProgressDialog.show(RequirementListingActivity.this, "Please wait ...", msg, true);
+    ringProgressDialog.setCancelable(false);
+  }
+
+  public void dismissProgressDialog() {
+    ringProgressDialog.dismiss();
   }
 
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -171,23 +183,23 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
       String data = CommonFunctions.trimMessage(response, "data");
-      if(data != null)
+      if(data != null) {
         try {
-          Log.i("data",data);
+          Log.i("data", data);
           JSONObject jsonObj = new JSONObject(data);
           String type = jsonObj.getString("type");
-          switch (type){
+          switch (type) {
             case "save":
               JSONObject list = new JSONObject(jsonObj.getString("req"));
               long server_req_id = list.getLong("id");
               RequirementModule.getInstance().updateRequirementStatus(getApplicationContext(), requirement_id, server_req_id);
               ArrayList<RequirementModule> requirementList = RequirementModule.getInstance().getRequirementInfo(this, 0);
-              requirementListAdapter = new RequirementListAdapter(this, R.layout.custom_property_view,requirementList);
+              requirementListAdapter = new RequirementListAdapter(this, R.layout.custom_property_view, requirementList);
               requirementListView.setAdapter(requirementListAdapter);
 
               break;
             case "delete":
-              RequirementModule.getInstance().deleteProperty(getApplicationContext(),requirement_id);
+              RequirementModule.getInstance().deleteProperty(getApplicationContext(), requirement_id);
               requirementListAdapter.remove(requirementModule);
               requirementListAdapter.notifyDataSetChanged();
               break;
@@ -195,6 +207,8 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
         } catch (JSONException e) {
           e.printStackTrace();
         }
+      }
+      dismissProgressDialog();
     }
 
   }
@@ -206,10 +220,12 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
     else if(error.networkResponse != null){
       CommonFunctions.errorResponseHandler(getApplicationContext(), error);
     }
+    dismissProgressDialog();
   }
 
   @Override
   public void OnBtnClick(long id) {
     requirement_id = id;
+    launchProgressDialog("Creating Requirement...");
   }
 }

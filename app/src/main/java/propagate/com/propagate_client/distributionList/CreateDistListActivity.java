@@ -220,16 +220,16 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
       String data = CommonFunctions.trimMessage(response, "data");
-      if(data != null)
+      if(data != null) {
         try {
-          Log.i("data",data);
+          Log.i("data", data);
           JSONObject jsonObj = new JSONObject(data);
           String type = jsonObj.getString("type");
-          switch (type){
+          switch (type) {
             case "save":
               JSONObject list = new JSONObject(jsonObj.getString("list"));
               long server_group_id = list.getLong("id");
-              DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id,server_group_id);
+              DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id, server_group_id);
               dismissProgressDialog();
               loadGroupListing();
               break;
@@ -240,6 +240,7 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
         } catch (JSONException e) {
           e.printStackTrace();
         }
+      }
     }
   }
 
@@ -248,7 +249,7 @@ public class CreateDistListActivity extends Activity implements ContactAdapter.G
     if(error instanceof NoConnectionError)
       Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
     else if(error.networkResponse != null){
-      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
+      CommonFunctions.errorResponseHandler(getApplicationContext(), error);
     }
     dismissProgressDialog();
     loadGroupListing();

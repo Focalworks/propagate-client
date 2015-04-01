@@ -2,6 +2,7 @@ package propagate.com.propagate_client.distributionList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
       "Group Info", "Delete Group"
   };
   private long group_id;
+  private ProgressDialog ringProgressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -102,9 +104,10 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
         .setCancelable(false)
         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog,int id) {
+            dialog.dismiss();
             listModule = distListModule;
             AppController.getInstance().postDeleteDistList(DistListingActivity.this, distListModule.getServer_dist_id());
-            dialog.dismiss();
+            launchProgressDialog("Deleting Distribution List...");
           }
         })
         .setNegativeButton("No",new DialogInterface.OnClickListener() {
@@ -149,6 +152,15 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
     return false;
   }
 
+  public void launchProgressDialog(String msg) {
+    ringProgressDialog = ProgressDialog.show(DistListingActivity.this, "Please wait ...", msg, true);
+    ringProgressDialog.setCancelable(false);
+  }
+
+  public void dismissProgressDialog() {
+    ringProgressDialog.dismiss();
+  }
+
   @Override
   public void OnRequestResponse(String response) {
     if(response != null){
@@ -158,22 +170,22 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
       String data = CommonFunctions.trimMessage(response, "data");
-      if(data != null)
+      if(data != null) {
         try {
-          Log.i("data",data);
+          Log.i("data", data);
           JSONObject jsonObj = new JSONObject(data);
           String type = jsonObj.getString("type");
-          switch (type){
+          switch (type) {
             case "save":
               JSONObject list = new JSONObject(jsonObj.getString("list"));
               long server_group_id = list.getLong("id");
-              DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id,server_group_id);
+              DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id, server_group_id);
               ArrayList<DistListModule> distArrayList = DistListModule.getInstance().getDistLists(this, 0);
-              distListAdapter = new DistListAdapter(this, R.layout.custom_dist_view,distArrayList);
+              distListAdapter = new DistListAdapter(this, R.layout.custom_dist_view, distArrayList);
               distListAdapter.notifyDataSetChanged();
               break;
             case "delete":
-              DistListModule.getInstance().deleteDistList(getApplicationContext(),listModule.getDist_id());
+              DistListModule.getInstance().deleteDistList(getApplicationContext(), listModule.getDist_id());
               distListAdapter.remove(listModule);
               distListAdapter.notifyDataSetChanged();
               break;
@@ -181,6 +193,8 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
         } catch (JSONException e) {
           e.printStackTrace();
         }
+      }
+      dismissProgressDialog();
     }
   }
 
@@ -189,12 +203,14 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
     if(error instanceof NoConnectionError)
       Toast.makeText(getApplicationContext(),"No Connection Error",Toast.LENGTH_SHORT).show();
     else if(error.networkResponse != null){
-      CommonFunctions.errorResponseHandler(getApplicationContext(),error);
+      CommonFunctions.errorResponseHandler(getApplicationContext(), error);
     }
+    dismissProgressDialog();
   }
 
   @Override
   public void OnBtnClick(long id) {
     group_id = id;
+    launchProgressDialog("Creating Distribution List...");
   }
 }
