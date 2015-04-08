@@ -87,7 +87,6 @@ public class PropertyListAdapter extends ArrayAdapter<PropertyModule> {
           public void onClick(View v) {
             long prop_id = propertyModule.getP_id();
             customAdapterInterface.OnBtnClick(prop_id);
-            AppController.getInstance().postCreateProperty(activity,prop_id);
           }
         });
       }

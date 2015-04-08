@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.utils.CommonFunctions;
+import propagate.com.propagate_client.utils.CustomAdapterInterface;
 import propagate.com.propagate_client.volleyRequest.AppController;
 
 /**
@@ -23,12 +24,14 @@ public class DistListAdapter extends ArrayAdapter<DistListModule> {
   private ArrayList<DistListModule> groupArrayList;
   private Activity activity;
   private int group_row_view;
+  private CustomAdapterInterface customAdapterInterface;
 
   public DistListAdapter(Activity activity, int group_row_view, ArrayList<DistListModule> groupArrayList) {
     super(activity, group_row_view, groupArrayList);
     this.activity = activity;
     this.groupArrayList = groupArrayList;
     this.group_row_view = group_row_view;
+    customAdapterInterface = (CustomAdapterInterface) activity;
   }
 
   @Override
@@ -70,7 +73,8 @@ public class DistListAdapter extends ArrayAdapter<DistListModule> {
         imgRetry.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            AppController.getInstance().postCreateDistList(activity,distListModule.getDist_id());
+            long dist_id = distListModule.getDist_id();
+            customAdapterInterface.OnBtnClick(dist_id);
           }
         });
       }

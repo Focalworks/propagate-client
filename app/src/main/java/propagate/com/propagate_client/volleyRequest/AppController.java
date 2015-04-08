@@ -3,6 +3,7 @@ package propagate.com.propagate_client.volleyRequest;
 import android.app.Activity;
 import android.app.Application;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import propagate.com.propagate_client.gcm.GCMUtils;
 import propagate.com.propagate_client.login.LoginSessionManager;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.database.PropertyModule;
@@ -35,7 +37,7 @@ public class AppController extends Application implements APIHandlerInterface{
   public void onCreate() {
     super.onCreate();
     mInstance = this;
-
+    loginSessionManager = new LoginSessionManager(this);
     isoCode = CommonFunctions.getIsoCode(getApplicationContext());
   }
 
@@ -194,13 +196,36 @@ public class AppController extends Application implements APIHandlerInterface{
     return jsonParams;
   }
 
+  /*
+  * Register device id for notification
+  * */
+  public void registerDeviceID(){
+    APIHandler.getInstance(this).restAPIRequest(
+        Request.Method.POST,
+        Constants.registerDeviceUrl,
+        getGroupParams(),
+        null
+    );
+  }
+
+  public Map<String,String> getGroupParams(){
+    String registrationId = GCMUtils.getRegistrationId(getApplicationContext());
+    Map<String, String> jsonParams = new HashMap<String, String>();
+    jsonParams.put("deviceId", CommonFunctions.getDeviceId(this));
+    jsonParams.put("registrationId", registrationId);
+
+    return jsonParams;
+  }
+
   @Override
   public void OnRequestResponse(String response) {
-
+    Log.e("Request response",response);
+    loginSessionManager.resetDeviceRegistered(true);
   }
 
   @Override
   public void OnRequestErrorResponse(VolleyError error) {
-
+    Log.e("Request response error",error.toString());
+    loginSessionManager.resetDeviceRegistered(false);
   }
 }

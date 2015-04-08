@@ -29,6 +29,7 @@ import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.volleyRequest.APIHandler;
 import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
+import propagate.com.propagate_client.volleyRequest.AppController;
 
 /**
  * Created by kaustubh on 11/3/15.
@@ -95,34 +96,16 @@ public class LoginActivity extends Activity implements APIHandlerInterface{
     return val;
   }
 
-  /*
-  * Register device id for notification
-  * */
-  public void registerDeviceID(){
-    APIHandler.getInstance(this).restAPIRequest(
-        Request.Method.POST,
-        Constants.registerDeviceUrl,
-        getGroupParams(),
-        null
-    );
-  }
-
-  public Map<String,String> getGroupParams(){
-    String registrationId = GCMUtils.getRegistrationId(getApplicationContext());
-    Map<String, String> jsonParams = new HashMap<String, String>();
-    jsonParams.put("deviceId", CommonFunctions.getDeviceId(this));
-    jsonParams.put("registrationId", registrationId);
-
-    return jsonParams;
-  }
-
   @Override
   public void OnRequestResponse(String response) {
     Log.i("Response", response);
     try {
       JSONObject jsonObj = new JSONObject(response);
       loginSessionManager.createUserLoginSession(etEmail.getText().toString(),jsonObj.getString("access_token"),jsonObj.getString("refresh_token"));
-      registerDeviceID();
+
+      if(!loginSessionManager.isDeviceRegistered())
+        AppController.getInstance().registerDeviceID();
+
       Toast.makeText(getApplicationContext(),"Login Successful",Toast.LENGTH_LONG).show();
       Intent intent = new Intent(getApplicationContext(), DistListingActivity.class);
       startActivity(intent);

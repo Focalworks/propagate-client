@@ -33,6 +33,7 @@ public class LoginSessionManager {
   public static final String KEY_EMAIL = "email";
   public static final String KEY_ACCESS_TOKEN = "access_token";
   public static final String KEY_REFRESH_TOKEN = "refresh_token";
+  public static final String KEY_DEVICE_REGISTERED = "device_registered";
 
   // Constructor
   public LoginSessionManager(Context context){
@@ -96,12 +97,21 @@ public class LoginSessionManager {
     return pref.getBoolean(IS_USER_LOGIN, false);
   }
 
-  public void resetAccessToken(String access_token,String refresh_token){
-    editor.remove(KEY_ACCESS_TOKEN);
-    editor.remove(KEY_REFRESH_TOKEN);
+  //Check for DeviceRegistration
+  public boolean isDeviceRegistered(){
+    return pref.getBoolean(KEY_DEVICE_REGISTERED, false);
+  }
 
+  public void resetAccessToken(String access_token,String refresh_token){
     editor.putString(KEY_ACCESS_TOKEN, access_token);
     editor.putString(KEY_REFRESH_TOKEN, refresh_token);
+
+    // commit changes
+    editor.commit();
+  }
+
+  public void resetDeviceRegistered(Boolean val){
+    editor.putBoolean(KEY_DEVICE_REGISTERED, val);
 
     // commit changes
     editor.commit();

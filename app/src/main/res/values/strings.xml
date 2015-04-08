@@ -60,5 +60,6 @@
   <string name="menu_search">Search</string>
   <string name="btn_register">Register</string>
   <string name="btn_skip">Skip</string>
+  <string name="title_activity_test">TestActivity</string>
 
 </resources>

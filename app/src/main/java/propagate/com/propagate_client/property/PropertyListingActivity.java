@@ -207,7 +207,7 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
               PropertyModule.getInstance().updatePropertyStatus(getApplicationContext(), property_id, server_prop_id);
               ArrayList<PropertyModule> propertyList = PropertyModule.getInstance().getPropertyInfo(this, 0);
               propertyListAdapter = new PropertyListAdapter(this, R.layout.custom_property_view, propertyList);
-              propertyListAdapter.notifyDataSetChanged();
+              propertyListView.setAdapter(propertyListAdapter);
 
               break;
             case "delete":
@@ -238,5 +238,6 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
   public void OnBtnClick(long id) {
     property_id = id;
     launchProgressDialog("Creating Property ...");
+    AppController.getInstance().postCreateProperty(PropertyListingActivity.this,property_id);
   }
 }

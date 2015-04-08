@@ -90,7 +90,6 @@ public class RequirementListAdapter extends ArrayAdapter<RequirementModule> {
           public void onClick(View v) {
             long req_id = requirementModule.getR_id();
             customAdapterInterface.OnBtnClick(req_id);
-            AppController.getInstance().postCreateRequirement(activity,req_id);
           }
         });
       }

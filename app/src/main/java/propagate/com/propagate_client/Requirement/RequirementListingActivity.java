@@ -36,6 +36,7 @@ import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.utils.CustomAdapterInterface;
 import propagate.com.propagate_client.volleyRequest.APIHandler;
 import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
+import propagate.com.propagate_client.volleyRequest.AppController;
 
 /**
  * Created by kaustubh on 19/3/15.
@@ -202,7 +203,6 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
               ArrayList<RequirementModule> requirementList = RequirementModule.getInstance().getRequirementInfo(this, 0);
               requirementListAdapter = new RequirementListAdapter(this, R.layout.custom_property_view, requirementList);
               requirementListView.setAdapter(requirementListAdapter);
-
               break;
             case "delete":
               RequirementModule.getInstance().deleteProperty(getApplicationContext(), requirement_id);
@@ -233,5 +233,6 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
   public void OnBtnClick(long id) {
     requirement_id = id;
     launchProgressDialog("Creating Requirement...");
+    AppController.getInstance().postCreateRequirement(RequirementListingActivity.this,requirement_id);
   }
 }

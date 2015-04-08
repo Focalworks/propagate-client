@@ -80,4 +80,6 @@ public class PropertyDetailActivity extends Activity {
     Intent intent = new Intent(this,PropertyListingActivity.class);
     startActivity(intent);
   }
+
 }
+

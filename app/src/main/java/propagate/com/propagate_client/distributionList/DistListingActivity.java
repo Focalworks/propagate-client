@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.Requirement.RequirementListingActivity;
+import propagate.com.propagate_client.TestActivity;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.property.PropertyListingActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;
@@ -153,6 +154,12 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
         startActivity(i);
         finish();
         return true;
+
+      case R.id.action_logout:
+        Intent logout = new Intent(this, TestActivity.class);
+        startActivity(logout);
+        finish();
+        return true;
     }
 
     return false;
@@ -188,7 +195,7 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
               DistListModule.getInstance().updateDistListStatus(getApplicationContext(), group_id, server_group_id);
               ArrayList<DistListModule> distArrayList = DistListModule.getInstance().getDistLists(this, 0);
               distListAdapter = new DistListAdapter(this, R.layout.custom_dist_view, distArrayList);
-              distListAdapter.notifyDataSetChanged();
+              groupListView.setAdapter(distListAdapter);
               break;
             case "delete":
               DistListModule.getInstance().deleteDistList(getApplicationContext(), listModule.getDist_id());
@@ -218,5 +225,6 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
   public void OnBtnClick(long id) {
     group_id = id;
     launchProgressDialog("Creating Distribution List...");
+    AppController.getInstance().postCreateDistList(DistListingActivity.this,group_id);
   }
 }

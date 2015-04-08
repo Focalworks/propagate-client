@@ -3,7 +3,9 @@ package propagate.com.propagate_client.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -12,27 +14,44 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
 import propagate.com.propagate_client.gcm.GCMUtils;
 import propagate.com.propagate_client.gcm.RegisterDeviceTask;
+import propagate.com.propagate_client.utils.Constants;
+import propagate.com.propagate_client.volleyRequest.APIHandler;
+import propagate.com.propagate_client.volleyRequest.APIHandlerInterface;
+import propagate.com.propagate_client.volleyRequest.AppController;
 
 
-public class LoginSelectionActivity extends Activity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks,RegisterDeviceTask.OnTaskExecutionFinished {
+public class LoginSelectionActivity extends Activity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks,RegisterDeviceTask.OnTaskExecutionFinished,APIHandlerInterface {
 
   private LinearLayout linearSignOptions,linearSignIN;
   private Button btnDefaultLogin,btnSignIn,btnSignUp;
@@ -63,6 +82,7 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
   private static final int RC_SIGN_IN = 0;
   private LoginSessionManager loginSessionManager;
   private Animation animScale;
+  private String account;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +92,9 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
     loginSessionManager = new LoginSessionManager(this);
 
     if(loginSessionManager.isUserLoggedIn()){
+      if(!loginSessionManager.isDeviceRegistered())
+        AppController.getInstance().registerDeviceID();
+
       Intent intent = new Intent(this, DistListingActivity.class);
       startActivity(intent);
       finish();
@@ -98,23 +121,31 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
     btnFBSignIn = (LoginButton) findViewById(R.id.loginSelectionBtnFBSignIn);
     btnFBSignIn.setOnClickListener(this);
     btnFBSignIn.setReadPermissions(Arrays.asList("email"));
-    btnFBSignIn.setUserInfoChangedCallback(new LoginButton.UserInfoChangedCallback() {
-      @Override
-      public void onUserInfoFetched(GraphUser user) {
-        if (user != null) {
-          Toast.makeText(getApplicationContext(),"You are currently logged in as " + user.getName()+" "+user.getProperty("email")+" "+user.getId(),Toast.LENGTH_SHORT).show();
+
+    if(!loginSessionManager.isUserLoggedIn()) {
+      btnFBSignIn.setUserInfoChangedCallback(new LoginButton.UserInfoChangedCallback() {
+        @Override
+        public void onUserInfoFetched(GraphUser user) {
+          Session session = Session.getActiveSession();
+          if (user != null) {
+            account = user.getProperty("email").toString();
+            Log.e("Facebook", "You are currently logged in as " + user.getName());
+            Log.e("Facebook Access Token", session.getAccessToken());
+            fbOauthToken(session.getAccessToken());
+          }
         }
-      }
-    });
+      });
 
-    mGoogleApiClient = new GoogleApiClient.Builder(this)
-        .addConnectionCallbacks(this)
-        .addOnConnectionFailedListener(this)
-        .addApi(Plus.API)
-        .addScope(Plus.SCOPE_PLUS_LOGIN)
-        .build();
+      mGoogleApiClient = new GoogleApiClient.Builder(this)
+          .addConnectionCallbacks(this)
+          .addOnConnectionFailedListener(this)
+          .addApi(Plus.API)
+          .addScope(Plus.SCOPE_PLUS_LOGIN)
+          .addScope(new Scope("email"))
+          .build();
 
-    registerDeviceForGCM();
+      registerDeviceForGCM();
+    }
 
     animScale = AnimationUtils.loadAnimation(this,R.anim.scale_down);
     animUP = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
@@ -245,8 +276,8 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
   @Override
   public void onConnected(Bundle connectionHint) {
     mSignInClicked = false;
-    Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
     getProfileInformation();
+    Toast.makeText(getApplicationContext(),"User Connected...!!!", Toast.LENGTH_LONG).show();
   }
 
   /**
@@ -255,20 +286,11 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
   private void getProfileInformation() {
     try {
       if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-        Person currentPerson = Plus.PeopleApi
-            .getCurrentPerson(mGoogleApiClient);
-        currentPerson.getId();
-        String personName = currentPerson.getDisplayName();
-        String personPhotoUrl = currentPerson.getImage().getUrl();
-        String personGooglePlusProfile = currentPerson.getUrl();
-        String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
 
-        Log.e("", "Name: " + personName + ", plusProfile: "
-            + personGooglePlusProfile + ", email: " + email
-            + ", Image: " + personPhotoUrl);
+        Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+        new GPlusAccessTokenTask().execute();
       } else {
-        Toast.makeText(getApplicationContext(),
-            "Person information is null", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Person information is null", Toast.LENGTH_LONG).show();
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -290,6 +312,22 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
       }
     }
   };
+
+  private void fbOauthToken(String access_token){
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("code", access_token);
+    params.put("client", "android");
+    params.put("grant_type", "facebook");
+    params.put("client_id", "testclient");
+    params.put("client_secret", "testpass");
+
+    APIHandler.getInstance(this).restAPIRequest(
+        Request.Method.POST,
+        Constants.fbTokenUrl,
+        params,
+        null
+    );
+  }
 
   @Override
   public void onResume() {
@@ -335,6 +373,78 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
     }else if(loginType == "facebook"){
       uiHelper.onActivityResult(requestCode, responseCode, intent);
     }
+  }
+
+  private class GPlusAccessTokenTask extends AsyncTask<String,Void,String>{
+
+    @Override
+    protected String doInBackground(String... params) {
+      String accessToken = "";
+
+      account = Plus.AccountApi.getAccountName(mGoogleApiClient);
+      try {
+
+        accessToken = GoogleAuthUtil.getToken(
+            LoginSelectionActivity.this,
+            account,
+            "oauth2:"+Scopes.PLUS_LOGIN + " " + Scopes.PLUS_ME + " https://www.googleapis.com/auth/userinfo.email"
+        );
+
+      } catch (Exception e) {
+        e.printStackTrace();
+        Log.e("GPlus access " + account, e.toString());
+      }
+
+      return accessToken;
+    }
+
+    @Override
+
+    protected void onPostExecute(String accessToken) {
+      super.onPostExecute(accessToken);
+      Log.e("GPlus access token", accessToken);
+      postGoogleToken(accessToken);
+    }
+  }
+
+  private void postGoogleToken(String accessToken){
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("code", accessToken);
+    params.put("client", "android");
+    params.put("grant_type", "google");
+    params.put("client_id", "testclient");
+    params.put("client_secret", "testpass");
+
+    APIHandler.getInstance(getApplicationContext()).restAPIRequest(
+        Request.Method.POST,
+        Constants.googleTokenUrl,
+        params,
+        null
+    );
+  }
+
+  @Override
+  public void OnRequestResponse(String response) {
+    Log.e("GToken response",response);
+    try {
+      JSONObject jsonObj = new JSONObject(response);
+      loginSessionManager.createUserLoginSession(account,jsonObj.getString("access_token"),jsonObj.getString("refresh_token"));
+
+      if(!loginSessionManager.isDeviceRegistered())
+        AppController.getInstance().registerDeviceID();
+
+      Toast.makeText(getApplicationContext(),"Login Successful",Toast.LENGTH_LONG).show();
+      Intent intent = new Intent(getApplicationContext(), DistListingActivity.class);
+      startActivity(intent);
+      finish();
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void OnRequestErrorResponse(VolleyError error) {
+    Log.e("GToken Error response",error.toString());
   }
 
 }
