@@ -2,6 +2,7 @@ package propagate.com.propagate_client.volleyRequest;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -9,6 +10,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.facebook.Session;
+import com.google.android.gms.plus.Plus;
 
 import org.json.JSONArray;
 
@@ -16,7 +19,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import propagate.com.propagate_client.distributionList.DistListingActivity;
 import propagate.com.propagate_client.gcm.GCMUtils;
+import propagate.com.propagate_client.login.LoginSelectionActivity;
 import propagate.com.propagate_client.login.LoginSessionManager;
 import propagate.com.propagate_client.database.DistListModule;
 import propagate.com.propagate_client.database.PropertyModule;
@@ -67,6 +72,19 @@ public class AppController extends Application implements APIHandlerInterface{
   public void cancelPendingRequests(Object tag) {
     if (mRequestQueue != null) {
       mRequestQueue.cancelAll(tag);
+    }
+  }
+
+
+  public void logoutUser(){
+    loginSessionManager.logoutUser();
+    if (LoginSelectionActivity.mGoogleApiClient.isConnected()){
+      Plus.AccountApi.clearDefaultAccount(LoginSelectionActivity.mGoogleApiClient);
+      LoginSelectionActivity.mGoogleApiClient.disconnect();
+      LoginSelectionActivity.mGoogleApiClient.connect();
+    } else if (Session.getActiveSession() != null) {
+      Session.getActiveSession().closeAndClearTokenInformation();
+      Session.setActiveSession(null);
     }
   }
 

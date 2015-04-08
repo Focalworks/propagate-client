@@ -22,15 +22,15 @@ public class Constants {
   /*
   * Urls
   * */
-  //  private static String baseUrl = "http://192.168.7.150/propaget/prop_lravel5/propaget/public/";
-//  private static String baseUrl = "http://192.168.7.205/RND/laravel_rnd/propaget/public/";
-    private static String baseUrl = "http://192.168.7.102/propaget/public/";
-  //    private static String baseUrl = "http://192.168.0.104/propaget/public/";
+  // private static String baseUrl = "http://192.168.7.150/propaget/prop_lravel5/propaget/public/";
+  private static String baseUrl = "http://192.168.7.205/RND/laravel_rnd/propaget/public/";
+  // private static String baseUrl = "http://192.168.7.102/propaget/public/";
+  // private static String baseUrl = "http://192.168.0.104/propaget/public/";
   public static String getSessionTokenUrl = baseUrl + "get-token";
   public static String registerDeviceUrl = baseUrl + "register-device";
   public static String loginOauthUrl = baseUrl + "oauth/token";
-  public static String fbTokenUrl = baseUrl + "mobilefb";
-  public static String googleTokenUrl = baseUrl + "mobilegoogle";
+  public static String fbTokenUrl = baseUrl + "fbOauth";
+  public static String googleTokenUrl = baseUrl + "googleOauth";
   public static String registerUserUrl = baseUrl + "profile";
   public static String postDistListUrl = baseUrl + "dist-list";
   public static String postPropertyUrl = baseUrl + "property";

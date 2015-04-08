@@ -30,6 +30,7 @@ import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.Requirement.RequirementListingActivity;
 import propagate.com.propagate_client.TestActivity;
 import propagate.com.propagate_client.database.DistListModule;
+import propagate.com.propagate_client.login.LoginSelectionActivity;
 import propagate.com.propagate_client.property.PropertyListingActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.CustomAdapterInterface;
@@ -156,9 +157,7 @@ public class DistListingActivity extends Activity implements APIHandlerInterface
         return true;
 
       case R.id.action_logout:
-        Intent logout = new Intent(this, TestActivity.class);
-        startActivity(logout);
-        finish();
+        AppController.getInstance().logoutUser();
         return true;
     }
 

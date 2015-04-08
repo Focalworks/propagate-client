@@ -35,6 +35,7 @@ import propagate.com.propagate_client.Requirement.RequirementListingActivity;
 import propagate.com.propagate_client.database.PropertyModule;
 import propagate.com.propagate_client.database.RequirementModule;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
+import propagate.com.propagate_client.login.LoginSelectionActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
 import propagate.com.propagate_client.utils.CustomAdapterInterface;
@@ -180,6 +181,10 @@ public class PropertyListingActivity extends Activity implements APIHandlerInter
         Intent i = new Intent(this, RequirementListingActivity.class);
         startActivity(i);
         finish();
+        return true;
+
+      case R.id.action_logout:
+        AppController.getInstance().logoutUser();
         return true;
     }
 

@@ -72,7 +72,7 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
   private ConnectionResult mConnectionResult;
 
   // Google client to interact with Google API
-  private GoogleApiClient mGoogleApiClient;
+  public static GoogleApiClient mGoogleApiClient;
 
   /**
    * A flag indicating that a PendingIntent is in progress and prevents us
@@ -277,7 +277,7 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
   public void onConnected(Bundle connectionHint) {
     mSignInClicked = false;
     getProfileInformation();
-    Toast.makeText(getApplicationContext(),"User Connected...!!!", Toast.LENGTH_LONG).show();
+//    Toast.makeText(getApplicationContext(),"User Connected...!!!", Toast.LENGTH_LONG).show();
   }
 
   /**
@@ -415,7 +415,7 @@ public class LoginSelectionActivity extends Activity implements View.OnClickList
     params.put("client_id", "testclient");
     params.put("client_secret", "testpass");
 
-    APIHandler.getInstance(getApplicationContext()).restAPIRequest(
+    APIHandler.getInstance(this).restAPIRequest(
         Request.Method.POST,
         Constants.googleTokenUrl,
         params,

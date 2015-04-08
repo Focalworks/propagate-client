@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import propagate.com.propagate_client.R;
 import propagate.com.propagate_client.database.RequirementModule;
 import propagate.com.propagate_client.distributionList.DistListingActivity;
+import propagate.com.propagate_client.login.LoginSelectionActivity;
 import propagate.com.propagate_client.property.PropertyListingActivity;
 import propagate.com.propagate_client.utils.CommonFunctions;
 import propagate.com.propagate_client.utils.Constants;
@@ -175,6 +176,10 @@ public class RequirementListingActivity extends Activity implements APIHandlerIn
         Intent i = new Intent(this, PropertyListingActivity.class);
         startActivity(i);
         finish();
+        return true;
+
+      case R.id.action_logout:
+        AppController.getInstance().logoutUser();
         return true;
     }
 
